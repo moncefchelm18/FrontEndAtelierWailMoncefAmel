@@ -1,0 +1,410 @@
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #314985;
+    /*height: 100%;*/
+    /*overflow: auto;*/
+    width: 250px;
+}
+
+.logo-container {
+    padding: 9.5px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.logo {
+    height: 50px;
+}
+
+.menu-items {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    /*font-family: 'Roboto';*/
+
+    line-height: 23px;
+    letter-spacing: 0.1em;
+}
+
+.menu-item {
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 20px 30px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #fff;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease-in-out;
+}
+
+.menu-item:hover {
+    background: #1BB5F5;
+}
+
+/* elements */
+/*
+position: absolute;
+width: 262px;
+height: 382px;
+left: 0px;
+top: 92px;
+
+
+
+!* My Account *!
+
+position: absolute;
+width: 172px;
+height: 24px;
+left: 13px;
+top: 450px;
+
+
+
+!* 🦆 icon "user" *!
+
+position: absolute;
+width: 21.6px;
+height: 24px;
+left: 13px;
+top: 450px;
+
+
+
+!* Vector *!
+
+position: absolute;
+left: 0.9%;
+right: 97.6%;
+top: 43.95%;
+bottom: 53.71%;
+
+background: #FFFFFF;
+
+
+!* My Account *!
+
+position: absolute;
+width: 126px;
+height: 23px;
+left: 59px;
+top: 451px;
+
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 700;
+font-size: 20px;
+line-height: 23px;
+letter-spacing: 0.1em;
+text-transform: capitalize;
+
+color: #FFFFFF;
+
+
+
+!* Managers *!
+
+position: absolute;
+width: 149px;
+height: 24px;
+left: 14px;
+top: 381px;
+
+
+
+!* 🦆 icon "user add" *!
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 14px;
+top: 381px;
+
+
+
+!* Vector *!
+
+position: absolute;
+left: 0.97%;
+right: 97.36%;
+top: 37.21%;
+bottom: 60.45%;
+
+background: #FFFFFF;
+
+
+!* Managers *!
+
+position: absolute;
+width: 104px;
+height: 23px;
+left: 59px;
+top: 381px;
+
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 700;
+font-size: 20px;
+line-height: 23px;
+letter-spacing: 0.1em;
+text-transform: capitalize;
+
+color: #FFFFFF;
+
+
+
+!* Locations *!
+
+position: absolute;
+width: 151px;
+height: 23px;
+left: 14px;
+top: 313px;
+
+
+
+!* inventory *!
+
+position: absolute;
+width: 105px;
+height: 23px;
+left: 60px;
+top: 313px;
+
+
+
+!* Inventory *!
+
+position: absolute;
+width: 105px;
+height: 23px;
+left: 60px;
+top: 313px;
+
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 700;
+font-size: 20px;
+line-height: 23px;
+letter-spacing: 0.1em;
+text-transform: capitalize;
+
+color: #FFFFFF;
+
+
+
+!* Vector *!
+
+position: absolute;
+left: 0.97%;
+right: 97.29%;
+top: 30.57%;
+bottom: 67.19%;
+
+background: #FFFFFF;
+
+
+!* Categories *!
+
+position: absolute;
+width: 241.26px;
+height: 24px;
+left: 14px;
+top: 244px;
+
+
+
+!* 🦆 icon "chevron right" *!
+
+position: absolute;
+width: 8.26px;
+height: 14.44px;
+left: 247px;
+top: 262.44px;
+
+transform: matrix(1, 0, 0, -1, 0, 0);
+
+
+!* Vector *!
+
+position: absolute;
+left: 17.15%;
+right: 82.27%;
+top: 25.63%;
+bottom: 72.96%;
+
+background: #FFFFFF;
+transform: matrix(1, 0, 0, -1, 0, 0);
+
+
+!* 🦆 icon "grid" *!
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 14px;
+top: 244px;
+
+
+
+!* Vector *!
+
+position: absolute;
+left: 0.97%;
+right: 97.36%;
+top: 23.83%;
+bottom: 73.83%;
+
+background: #FFFFFF;
+
+
+!* Categories *!
+
+position: absolute;
+width: 116px;
+height: 23px;
+left: 59px;
+top: 244px;
+
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 700;
+font-size: 20px;
+line-height: 23px;
+letter-spacing: 0.1em;
+text-transform: capitalize;
+
+color: #FFFFFF;
+
+
+
+!* Inventory *!
+
+position: absolute;
+width: 146px;
+height: 24px;
+left: 14px;
+top: 175px;
+
+
+
+!* inventory *!
+
+position: absolute;
+width: 146px;
+height: 24px;
+left: 14px;
+top: 175px;
+
+
+
+!* 🦆 icon "archive" *!
+
+position: absolute;
+width: 24px;
+height: 24px;
+left: 14px;
+top: 175px;
+
+
+
+!* Vector *!
+
+position: absolute;
+left: 0.97%;
+right: 97.36%;
+top: 17.09%;
+bottom: 80.57%;
+
+background: #FFFFFF;
+
+
+!* Inventory *!
+
+position: absolute;
+width: 101px;
+height: 23px;
+left: 59px;
+top: 175px;
+
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 700;
+font-size: 20px;
+line-height: 23px;
+letter-spacing: 0.1em;
+text-transform: capitalize;
+
+color: #FFFFFF;
+
+
+
+!* Dashboard *!
+
+position: absolute;
+width: 262px;
+height: 53px;
+left: 0px;
+top: 92px;
+
+
+
+!* Rectangle 9 *!
+
+position: absolute;
+width: 262px;
+height: 53px;
+left: 0px;
+top: 92px;
+
+background: #1BB5F5;
+
+
+!* 🦆 icon "bar chart" *!
+
+position: absolute;
+width: 24.76px;
+height: 24.76px;
+left: 14px;
+top: 106px;
+
+
+
+!* Vector *!
+
+position: absolute;
+left: 0.97%;
+right: 97.31%;
+top: 10.35%;
+bottom: 87.23%;
+
+background: #FFFFFF;
+
+
+!* Dashboard *!
+
+position: absolute;
+width: 113px;
+height: 23px;
+left: 59px;
+top: 107px;
+
+font-family: 'Roboto';
+font-style: normal;
+font-weight: 700;
+font-size: 20px;
+line-height: 23px;
+letter-spacing: 0.1em;
+text-transform: capitalize;
+
+color: #FFFFFF;*/
+
+

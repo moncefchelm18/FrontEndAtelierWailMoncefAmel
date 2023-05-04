@@ -1,0 +1,257 @@
+/*form*/
+.form-container{
+    /*height: 100%;*/
+    align-self: center;
+}
+.form-container-form{
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 35px 20px;
+    background: white;
+    box-shadow: 0px 1px 10px 0 rgba(62, 62, 62, 0.18);
+}
+/*form-header*/
+.form-container-form h2{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    padding: 0px 20px 20px;
+    color: #383E49;
+}
+
+/*image*/
+.form-container-form-infos-input-img{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 20px;
+    gap: 20px;
+
+}
+.form-container-form-infos img, .preview-image{
+    width: 83px;
+    height: 83px;
+    border: 1px solid grey;
+    border-radius: 100%;
+}
+.input-image-text{
+    display: flex;
+    flex-direction: column;
+}
+.input-label {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #858D9D;
+    margin: 0;
+    text-align: center;
+}
+
+.input-or {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #858D9D;
+    margin: 0;
+    text-align: center;
+    margin: 4px 0;
+}
+
+.input-browse {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #448DF2;
+    margin: 0;
+    text-align: center;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.input-browse:hover {
+    background-color: rgba(68, 141, 242, 0.2);
+}
+
+.input-browse svg {
+    fill: #777777;
+}
+
+.input-browse-text {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    margin-top: 8px;
+    color: #448DF2;
+}
+
+.input-file {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+/*infos*/
+.form-container-form-infos{
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: #48505E;
+}
+.form-container-form-infos form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.form-container-form-infos-input{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
+    gap: 50px;
+
+}
+.form-container-form-infos input{
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 8px;
+    background: #FFFFFF;
+    border: 1px solid #D0D5DD;
+    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+    border-radius: 8px;
+}
+.form-container-form-infos textarea{
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 28px;
+    gap: 8px;
+    background: #FFFFFF;
+    border: 1px solid #D0D5DD;
+    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+    border-radius: 8px;
+}
+/*
+!* Firstname *!
+
+position: absolute;
+width: 477px;
+height: 44px;
+left: 59px;
+top: 220px;
+
+
+
+!* Firstname *!
+
+position: absolute;
+width: 77px;
+height: 24px;
+left: 59px;
+top: 230px;
+
+!* Body 1/Medium *!
+font-family: 'Inter';
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 24px;
+!* identical to box height, or 150% *!
+
+!* Grey/grey-700 *!
+color: #48505E;
+
+
+
+!* Input *!
+
+box-sizing: border-box;
+
+!* Auto layout *!
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 10px 14px;
+gap: 8px;
+
+position: absolute;
+width: 273px;
+height: 44px;
+left: 263px;
+top: 220px;
+
+!* White *!
+background: #FFFFFF;
+!* Gray/300 *!
+border: 1px solid #D0D5DD;
+!* Shadow/xs *!
+box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+border-radius: 8px;
+
+
+!* Content *!
+
+!* Auto layout *!
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 8px;
+
+width: 245px;
+height: 24px;
+
+
+!* Inside auto layout *!
+flex: none;
+order: 0;
+flex-grow: 1;
+
+
+!* Text *!
+
+width: 245px;
+height: 24px;
+
+!* Text md/Normal *!
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 24px;
+!* identical to box height, or 150% *!
+
+!* Grey/grey-400 *!
+color: #858D9D;
+
+
+!* Inside auto layout *!
+flex: none;
+order: 0;
+flex-grow: 1;
+*/

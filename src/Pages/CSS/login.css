@@ -1,0 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+.login-login{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+
+}
+.login-login-logo1{
+    width: 380px;
+    height: auto;
+}
+.login-gradients-purple-sky2 {
+    width: 50vw; /* set the width to 50% of the viewport width */
+    height: 100%; /* set the height to 100% of the parent element */
+    /*position: absolute;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 3.999999761581421px 7.999999523162842px 9.999999046325684px 0px rgba(0, 0, 0, 0.25);
+    flex-shrink: 0;
+    border-color: transparent;
+    background-image: linear-gradient(55deg, rgba(4, 83, 125, 1) 0%, rgba(13, 106, 154, 1) 26%,
+    rgba(20, 130, 184, 1) 50%, rgba(24, 155, 214, 1) 77%,
+    rgba(27, 181, 245, 1) 100%);
+    overflow: hidden;
+
+}
+/*Form section*/
+.login-form{
+    width: 50vw;
+    height: 100%;
+    /*background-color: red;*/
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    overflow: auto;
+}
+.login-form1{
+    /*background-color: #fffea9;*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 10px;
+
+}
+
+/* Header */
+.login-form-header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 24px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 38px;
+    text-align: center;
+
+}
+.login-form-small-logo{
+    width: 48.37px;
+    height: 48px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+
+}
+.login-form-text02{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    color: #667085;
+}
+/*input Field*/
+.login-form-inputfield{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px;
+    gap: 24px;
+    font-family: 'Inter';
+    line-height: 38px;
+    text-align: center;
+}
+.login-form-inputfield-label{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 1px;
+    width: 360px;
+    height: 70px;
+}
+.login-form-inputfield-label-text{
+    /*padding-left: 15px;*/
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: #48505E;
+}
+.login-form-inputfield-input{
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 8px;
+    background: #FFFFFF;
+    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+    border-radius: 8px;
+    border: #b0b0b0 1px solid;
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+}
+.login-form-inputfield-input input{
+    width: 100%;
+}
+/*.login-form-inputfield-label2{
+    !*display: flex;*!
+    !*flex-direction: row;*!
+}*/
+
+/* Row */
+.login-form-row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: #1BB5F5;
+}
+/* Actions */
+.login-form-action{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /*padding-bottom: 10px;*/
+    gap: 8px;
+
+}
+.login-form-action-button1{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 18px;
+    gap: 8px;
+    width: 100%;
+    background: #04537D;
+    box-shadow: 0px 1px 2px rgba(16, 24, 40, 0.05);
+    border-radius: 4px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+}
+.login-form-action-button1:hover{
+    background: #1BB5F5;
+    transition: 0.3s;
+}
+.login-form-action-sign-up{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.login-form-action-button2{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 20px;
+    color: #1BB5F5;
+}
+.login-form-action-button2:hover{
+    color: #04537D;
+    transition: 0.3s;
+}
+
+
+
+@media(max-width: 767px){
+    .login-login{
+        display: flex;
+        flex-direction: column;
+    }
+    .login-gradients-purple-sky2 {
+        width: 100vw; /* set the width to 50% of the viewport width */
+        height: 10%; /* set the height to 100% of the parent element */
+        display: flex;
+        position: absolute;
+        box-shadow: 3.999999761581421px 7.999999523162842px 9.999999046325684px 0px rgba(0, 0, 0, 0.25);
+        align-items: flex-start;
+        flex-shrink: 0;
+        border-color: transparent;
+        background-image: linear-gradient(55deg, rgba(4, 83, 125, 1) 0%, rgba(13, 106, 154, 1) 26%,
+        rgba(20, 130, 184, 1) 50%, rgba(24, 155, 214, 1) 77%,
+        rgba(27, 181, 245, 1) 100%);
+    }
+    .login-login-logo1{
+        width: 300px;
+        height: auto;
+
+    }
+    .login-form{
+        width: 100vw;
+        height: auto;
+        /*background-color: red;*/
+        display: block;
+
+    }
+}

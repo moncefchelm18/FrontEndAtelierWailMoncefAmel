@@ -1,0 +1,24 @@
+.header{
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    z-index: 9;
+}
+
+.title {
+
+}
+.header-items{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 30px;
+/*style={{ display: 'flex', justifyContent: 'flex-end',
+    alignItems: 'center', gap:'8px' }}*/
+}
+.header-user-icon img{
+    width: 60px;
+    height: 60px;
+}
