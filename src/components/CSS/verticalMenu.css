@@ -46,6 +46,10 @@
 }
 
 .menu-item:hover {
+    background: rgba(27, 181, 245, 0.64);
+}
+
+.menu-item.active {
     background: #1BB5F5;
 }
 

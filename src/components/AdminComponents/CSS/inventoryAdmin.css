@@ -22,7 +22,7 @@
 
 /*overview*/
 .inventory-overall-container {
-    overflow: auto;
+    /*overflow: auto;*/
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -41,7 +41,7 @@
 
 
 
-.overview-grid {
+.overview-grids {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 20px;
@@ -83,6 +83,17 @@
 }
 /*header*/
 
+.inventory-table-year{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.inventory-table-year p{
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+
 .equipments-table-header{
     padding: 20px;
     padding-bottom: 0px;
@@ -103,6 +114,7 @@
 .equipments-table-header-actions{
     display: flex;
     gap: 8px;
+    align-items: center;
 }
 .filter_button{
     /* Button */
@@ -129,6 +141,28 @@
     line-height: 20px;
     color: #5D6679;
 }
+
+.add-button-history{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background: rgba(102, 104, 110, 0.56);
+    padding: 10.95px 16px;
+    border-radius: 4px;
+}
+.add-button-history button{
+    color: white;
+}
+.add-button-history:hover{
+    background-color: rgba(102, 104, 110, 0.7);
+    cursor: pointer;
+}
+.add-button-history:hover button{
+    cursor: pointer;
+}
+
+
 
 /*table*/
 /*.equipments-table{

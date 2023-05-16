@@ -73,6 +73,11 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 20px;
 }
+.overview-grids {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
+}
 
 .overview-item {
     background-color: #ffffff;

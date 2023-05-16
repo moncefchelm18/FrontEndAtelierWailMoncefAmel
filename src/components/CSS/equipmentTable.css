@@ -116,6 +116,11 @@
     color: #000000;
     white-space: nowrap;
 }
+.equipment-table-header:hover {
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.84);
+}
+
 
 .equipment-table-cell {
     padding: 1rem 1rem;
@@ -123,17 +128,23 @@
     white-space: nowrap;
     border-bottom: 0.5px solid #D0D3D9;
 }
+.equipment-table-cell.new {
+    color: #144414;
+}
 .equipment-table-cell.good {
     color: green;
 }
-
-.equipment-table-cell.fair {
+.equipment-table-cell.meduim {
     color: orange;
 }
 
 .equipment-table-cell.poor {
     color: red;
 }
+.equipment-table-cell.stolen {
+    color: #500f0f;
+}
+
 
 .equipment-table-table {
     display: grid;

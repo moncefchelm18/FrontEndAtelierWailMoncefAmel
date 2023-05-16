@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
+import Loading from "../../Loading";
+import {useCookies} from "react-cookie";
 
 const CategoriesForm = (props) => {
     const [name, setName] = useState("");
@@ -6,12 +8,13 @@ const CategoriesForm = (props) => {
     const [error, setError] = useState(null);
     const [existError, setExistError] = useState(null);
     const [succesMessage, setSuccesMessage] = useState(null)
-
+    const [loading, setLoading] = useState(null);
+    const [cookies] = useCookies(['token']);
     // error and succes message
     const ErrorMessage = (props) => {
         return (
             <>
-                <div style={{ color: "red" }}>{props.title}</div>
+                <div style={{color: "red"}}>{props.title}</div>
             </>
         );
     };
@@ -19,7 +22,7 @@ const CategoriesForm = (props) => {
     const SuccesMessage = () => {
         return (
             <>
-                <div style={{ color: "green" }}>Categorie added successfully!</div>
+                <div style={{color: "green"}}>Categorie added successfully!</div>
             </>
         )
     }
@@ -28,7 +31,7 @@ const CategoriesForm = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (!name || !description) {
+        if (!name) {
             event.preventDefault();
             setError(<ErrorMessage/>)
             return;
@@ -40,84 +43,91 @@ const CategoriesForm = (props) => {
             discription: description,
             created_on: new Date(),
         };
-
-        fetch("http://127.0.0.1:8000/categories/", {
-            method: "POST",
+        setLoading(true)
+        fetch('http://127.0.0.1:8000/categories/', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${cookies.token}`
             },
             body: JSON.stringify(data)
         })
-            .then(response => {
+            .then((response) => {
                 if (!response.ok) {
-                    console.log('hellsqdqsdo');
                     setExistError(true);
                     setSuccesMessage(false);
-                    throw new Error('category already exist');
+                    throw new Error('Category already exists');
                 }
-                return response.json()
+                return response.json();
             })
-            .then(data => {
-                console.log(data);
+            .then((data) => {
                 props.getUpdatedData(data);
-                setSuccesMessage(<SuccesMessage/>);
-                setExistError(false)
-                // Do something with the response data, e.g. update state
+                setSuccesMessage(<SuccesMessage />);
+                setExistError(false);
+                setName('');
+                setDescription('');
+                setLoading(false);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
-                // setError(error.message);
-                // Handle errors
+                setLoading(false);
             });
     };
 
-    return(
-        <div className="add-form">
-            <h2>New equipement categorie</h2>
-            {error && <ErrorMessage title={'Please fill all columns.'} />}
-            {existError && <ErrorMessage title={'Categorie already exist.'}/>}
-            {succesMessage && <SuccesMessage />}
-            <form onSubmit={handleSubmit}>
-                <div className="add-form-input">
-                    <label htmlFor="categorie">
-                        Categorie
-                    </label>
-                    <input
-                        type="text"
-                        id="categorie"
-                        className="add-form-input-input"
-                        placeholder="Enter categorie name"
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
-                        onFocus={() => {
-                            setError(null);
-                            setSuccesMessage(null);
-                        }}
-                    />
+    return (
+        <>{loading ? <Loading/> : (
+            <>
+                <div className="add-form">
+                    <h2>New equipement categorie</h2>
+                    {error && <ErrorMessage title={'Please fill neccessary columns.'}/>}
+                    {existError && <ErrorMessage title={'Categorie already exist.'}/>}
+                    {succesMessage && <SuccesMessage/>}
+                    <form onSubmit={handleSubmit}>
+                        <div className="add-form-input">
+                            <label htmlFor="categorie">
+                                Categorie
+                            </label>
+                            <input
+                                type="text"
+                                id="categorie"
+                                className="add-form-input-input"
+                                placeholder="Enter categorie name"
+                                value={name}
+                                onChange={(event) => setName(event.target.value)}
+                                onFocus={() => {
+                                    setError(null);
+                                    setSuccesMessage(null);
+                                }}
+                            />
+                        </div>
+                        <div className="add-form-input">
+                            <label htmlFor="description">
+                                Description
+                            </label>
+                            <textarea
+                                type="text"
+                                id="description"
+                                className="add-form-input-input"
+                                placeholder="write a description"
+                                value={description}
+                                onChange={(event) => setDescription(event.target.value)}
+                                onFocus={() => {
+                                    setError(null);
+                                    setSuccesMessage(null);
+                                }}
+                            />
+                        </div>
+                        <div className="add-form-actions">
+                            <button type="submit" className="add-form-actions-submit">Add categorie</button>
+                            <button className="add-form-actions-discard" onClick={props.handleCancelForm}>Discard
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div className="add-form-input">
-                    <label htmlFor="description">
-                        Description
-                    </label>
-                    <input
-                        type="text"
-                        id="description"
-                        className="add-form-input-input"
-                        placeholder="write a description"
-                        value={description}
-                        onChange={(event) => setDescription(event.target.value)}
-                        onFocus={() => {
-                            setError(null);
-                            setSuccesMessage(null);
-                        }}
-                    />
-                </div>
-                <div className="add-form-actions">
-                    <button type="submit" className="add-form-actions-submit">Add categorie</button>
-                    <button className="add-form-actions-discard" onClick={props.handleCancelForm}>Discard</button>
-                </div>
-            </form>
-        </div>
+            </>
+        )}</>
+
+
     )
 };
 

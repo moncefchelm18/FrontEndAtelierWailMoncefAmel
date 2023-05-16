@@ -8,13 +8,13 @@
 <circle cx="-14.502" cy="-99.5" r="352.5" fill="#D9D9D9"/>
 </mask>
 <g mask="url(#mask1_785_4143)">
-<line x1="57.015" y1="-478.237" x2="57.0149" y2="279.236" stroke="black" stroke-opacity="0.3" stroke-width="0.846339"/>
-<line x1="128.107" y1="-478.237" x2="128.107" y2="279.236" stroke="black" stroke-opacity="0.3" stroke-width="0.846339"/>
-<line x1="270.292" y1="-478.237" x2="270.292" y2="279.236" stroke="black" stroke-opacity="0.3" stroke-width="0.846339"/>
-<line x1="199.201" y1="-478.237" x2="199.2" y2="279.236" stroke="black" stroke-opacity="0.3" stroke-width="0.846339"/>
-<line x1="364.234" y1="43.108" x2="-393.239" y2="43.1079" stroke="black" stroke-opacity="0.3" stroke-width="0.846339"/>
-<line x1="364.234" y1="185.293" x2="-393.239" y2="185.293" stroke="black" stroke-opacity="0.3" stroke-width="0.846339"/>
-<line x1="364.234" y1="114.201" x2="-393.239" y2="114.201" stroke="black" stroke-opacity="0.3" stroke-width="0.846339"/>
+<line x1="57.015" y1="-478.237" x2="57.0149" y2="279.236" stroke="black" strokeLinejoinacity="0.3" strokeWidth="0.846339"/>
+<line x1="128.107" y1="-478.237" x2="128.107" y2="279.236" stroke="black" stroke-opacity="0.3" strokeWidth="0.846339"/>
+<line x1="270.292" y1="-478.237" x2="270.292" y2="279.236" stroke="black" stroke-opacity="0.3" strokeWidth="0.846339"/>
+<line x1="199.201" y1="-478.237" x2="199.2" y2="279.236" stroke="black" stroke-opacity="0.3" strokeWidth="0.846339"/>
+<line x1="364.234" y1="43.108" x2="-393.239" y2="43.1079" stroke="black" stroke-opacity="0.3" strokeWidth="0.846339"/>
+<line x1="364.234" y1="185.293" x2="-393.239" y2="185.293" stroke="black" stroke-opacity="0.3" strokeWidth="0.846339"/>
+<line x1="364.234" y1="114.201" x2="-393.239" y2="114.201" stroke="black" stroke-opacity="0.3" strokeWidth="0.846339"/>
 </g>
 </g>
 </svg>

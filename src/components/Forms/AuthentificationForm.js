@@ -136,7 +136,7 @@ const AuthentificationForm = (props) => {
             </div>
             <div className="login-form-action">
                 <button type="submit" style={{cursor: "pointer"}} className="login-form-action-button1">
-                    Login
+                    Sign Up
                 </button>
             </div>
         </form>

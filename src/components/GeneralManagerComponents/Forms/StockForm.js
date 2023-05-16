@@ -1,35 +1,93 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 const StockForm = (props) => {
     const [categories, setCategories] = useState([]);
     const [previewImage, setPreviewImage] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [name, setName] = useState('');
+    const [brand, setBrand] = useState('');
+    const [model, setModel] = useState('');
+    const [factureNumber, setFactureNumber] = useState('');
+    const [datePurchase, setDatePurchase] = useState('');
+    // const [location, setLocation] = useState([]);
+    const [quantite, setQuantite] = useState('');
+    const [description, setDescription] = useState('');
+    const [message, setMessage] = useState('');
 
     const handleCategoriesChange = (event) => {
-        const options = event.target.options;
-        const selectedCategories = [];
-        for (let i = 0; i < options.length; i++) {
-            if (options[i].selected) {
-                selectedCategories.push(options[i].value);
-            }
-        }
-        setCategories(selectedCategories);
+        setSelectedCategory(event.target.value);
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log("Categories:", categories);
-    }
+
+        const formData = new FormData();
+        formData.append('created_by', 1);
+        formData.append('name', name);
+        formData.append('brand', brand);
+        formData.append('model', model);
+        formData.append('categorie', selectedCategory);
+        formData.append('facture_number', factureNumber);
+        formData.append('date_purchase', datePurchase);
+        formData.append('quantite', quantite);
+        formData.append('discription', description);
+        formData.append('image', event.target.image.files[0]);
+
+        fetch('http://127.0.0.1:8000/stock/', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                    console.log(data);
+                    props.getUpdatedData(data);
+                    setMessage(<p style={{color:'green'}}>Added to stock succefully!</p>)
+                }
+            )
+            .catch(
+                error => console.error(error)
+            );
+    };
 
     const handleImageChange = (event) => {
         const imageFile = event.target.files[0];
         const imageUrl = URL.createObjectURL(imageFile);
         setPreviewImage(imageUrl);
-    }
+    };
 
+    // forCategorieOptionList
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/categories/')
+            .then(response => response.json())
+            .then(data => {
+                setCategories(data);
+            });
+    }, [])
+    const categoriesList = categories.map((category) => {
+        return category.name;
+    });
+    const options = categoriesList.map((category) => {
+        return <option key={category} value={category}>{category}</option>
+    });
+
+    // forLocation
+    /*useEffect(() => {
+        fetch('http://127.0.0.1:8000/location/')
+            .then(response => response.json())
+            .then(data => {
+                setLocation(data);
+            });
+    }, []);*/
+    // console.log(location);
+    // console.log(location);
+    /*const locations = location.map((location) => {
+        return (location.name);
+    });*/
     return(
         <div className="add-form">
             <h2>New Equipment</h2>
-            <form onSubmit={handleSubmit}>
+            {message && message}
+            <form onSubmit={handleSubmit} onClick={() => setMessage(null)}>
                 <div className="form-container-form-infos-input-img">
                     <label htmlFor="image">
                         {previewImage ? (
@@ -38,8 +96,8 @@ const StockForm = (props) => {
                             <svg width="83" height="83" viewBox="0 0 83 83" fill="none"
                                  >
                                 <rect x="0.5" y="0.5" width="82" height="82" rx="41" stroke="#9D9D9D"
-                                      stroke-linecap="round" stroke-linejoin="round"
-                                      stroke-dasharray="5 5"/>
+                                      strokeLinecap="round" strokeLinejoin="round"
+                                      strokeDasharray="5 5"/>
                             </svg>
                         )}
                     </label>
@@ -61,10 +119,9 @@ const StockForm = (props) => {
                     <label htmlFor="categories">
                         Categories
                     </label>
-                    <select id="type" className="add-form-input-select" onChange={handleCategoriesChange}>
-                        <option value="" disabled selected hidden>Select a categorie</option>
-                        <option value="Categorie1">Categorie 1</option>
-                        <option value="Categorie2">Categorie 2</option>
+                    <select id="type" className="add-form-input-select" value={selectedCategory || ""} onChange={handleCategoriesChange}>
+                    <option value="" disabled hidden>Select a category</option>
+                        {options}
                     </select>
                 </div>
                 <div className="add-form-input">
@@ -76,6 +133,8 @@ const StockForm = (props) => {
                         id="name"
                         className="add-form-input-input"
                         placeholder="Enter equipment name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
                     />
                 </div>
                 <div className="add-form-input">
@@ -87,6 +146,8 @@ const StockForm = (props) => {
                         id="brand"
                         className="add-form-input-input"
                         placeholder="Enter brand"
+                        value={brand}
+                        onChange={(event) => setBrand(event.target.value)}
                     />
                 </div>
                 <div className="add-form-input">
@@ -98,17 +159,8 @@ const StockForm = (props) => {
                         id="model"
                         className="add-form-input-input"
                         placeholder="Enter model"
-                    />
-                </div>
-                <div className="add-form-input">
-                    <label htmlFor="serialnumber">
-                        Serial Number
-                    </label>
-                    <input
-                        type="number"
-                        id="serialnumber"
-                        className="add-form-input-input"
-                        placeholder="Enter serial number"
+                        value={model}
+                        onChange={(event) => setModel(event.target.value)}
                     />
                 </div>
                 <div className="add-form-input">
@@ -121,6 +173,8 @@ const StockForm = (props) => {
                         min="1"
                         className="add-form-input-input"
                         placeholder="Enter quantity"
+                        value={quantite}
+                        onChange={(event) => setQuantite(event.target.value)}
                     />
                 </div>
                 <div className="add-form-input">
@@ -132,6 +186,8 @@ const StockForm = (props) => {
                         id="invoicenumber"
                         className="add-form-input-input"
                         placeholder="Enter invoice number"
+                        value={factureNumber}
+                        onChange={(event) => setFactureNumber(event.target.value)}
                     />
                 </div>
                 <div className="add-form-input">
@@ -142,6 +198,8 @@ const StockForm = (props) => {
                         type="date"
                         id="purchasedate"
                         className="add-form-input-input"
+                        value={datePurchase}
+                        onChange={(event) => setDatePurchase(event.target.value)}
                     />
                 </div>
                 <div className="add-form-input">
@@ -152,6 +210,8 @@ const StockForm = (props) => {
                         id="description"
                         className="add-form-input-textarea"
                         placeholder="Write a description about these items"
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
                     />
                 </div>
                 <div className="add-form-actions">

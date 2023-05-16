@@ -1,13 +1,50 @@
 import Path from "../../../Path";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import EquipmentTableHeader from "../../../EquipmentTableHeader";
 import InfosTable from "../../../Tables/InfosTable";
 import InventoryTable from "../../../Tables/InventoryTable";
 import EquipmentTableFooter from "../../../EquipmentTableFooter";
 import StockForm from "../../Forms/StockForm";
 import AssignementForm from "./Forms/AssignementForm";
+import {useParams} from "react-router-dom";
 
 const PracticeRoomsContent = (props) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [inventoryData, setInventoryData] = useState([]);
+    const [filteredInventoryData, setFilteredInventoryData] = useState([]);
+
+    const { id } = useParams();
+    const columnMappings = {
+        // "ID": "id",
+        "IMG": "img",
+        "Name": "name",
+        "Reference": "reference",
+        "Categories": "categorie",
+        "Brand": "brand",
+        "Model": "model",
+        "Condition": "condition",
+        "Serial N*": "num_serie",
+        "Facture N*": "facture_number",
+        "Location": "Location",
+        "Assignment-Date": "date_assignment",
+        "Description": "discription",
+    };
+    const columnTitles = Object.keys(columnMappings);
+    useEffect(() => {
+        // Fetch data from API
+        fetch("http://127.0.0.1:8000/inventory/")
+            .then((response) => response.json())
+            .then((data) => {
+                setInventoryData(data);
+                // Filter data based on Location matching id parameter
+                const filteredData = data.filter((item) => item.Location === id);
+                setFilteredInventoryData(filteredData);
+            })
+            .catch((error) => console.error(error));
+    }, [id]);
+
+    console.log(filteredInventoryData);
+
     const handleAction = () => {
         return(
             <>
@@ -33,6 +70,16 @@ const PracticeRoomsContent = (props) => {
     const handleCancelForm = () =>{
         setShowForm(false);
     }
+
+    // tableFooter
+    const handleNextPage = () => {
+        setCurrentPage(currentPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage(currentPage - 1);
+    };
+    const totalPages = Math.ceil(filteredInventoryData.length / 10);
     return(
         <>
             <Path
@@ -44,8 +91,8 @@ const PracticeRoomsContent = (props) => {
                     },
                     {
                         link: "/GeneralManager/assignement/PracticeRooms",
-                        linkText: "Practice Rooms",
-                        pathName: "SalleTD",
+                        linkText: "Practice rooms",
+                        pathName: id,
                     },
 
                 ]}
@@ -61,11 +108,26 @@ const PracticeRoomsContent = (props) => {
                 {showForm &&
                     <>
                         <div onClick={handleCancelForm} className="overlay" />
-                        <AssignementForm handleCancelForm={handleCancelForm}/>
+                        <AssignementForm location={id} handleCancelForm={handleCancelForm}/>
                     </>
                 }
-                <InventoryTable actionRenderer={handleAction}/>
-                <EquipmentTableFooter/>
+                {filteredInventoryData.length === 0 ? <p style={{padding:'10px 20px'}}>No items avaliable in this location </p>
+                    : (
+                        <InfosTable
+                            columnTitles={columnTitles}
+                            currentPage={currentPage}
+                            columnMappings={columnMappings}
+                            data={filteredInventoryData}
+                            actionRenderer={(equipment) => handleAction(equipment)}
+                        />
+                    )
+                }
+                <EquipmentTableFooter
+                    currentPage={currentPage}
+                    handleNextPage={handleNextPage}
+                    handlePrevPage={handlePrevPage}
+                    totalPages={totalPages}
+                />
             </div>
 
         </>

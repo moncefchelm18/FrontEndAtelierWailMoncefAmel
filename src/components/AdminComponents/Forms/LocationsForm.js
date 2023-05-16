@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import {useCookies} from "react-cookie";
 
 const LocationsForm = (props) => {
     const [name, setName] = useState("");
@@ -6,6 +7,7 @@ const LocationsForm = (props) => {
     const [description, setDescription] = useState("");
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
+    const [cookies] = useCookies(['token']);
 
     // Error and success messages
     const ErrorMessage = ({ title }) => {
@@ -35,16 +37,17 @@ const LocationsForm = (props) => {
             created_on: new Date(),
         };
 
-        fetch("http://127.0.0.1:8000/location/", {
-            method: "POST",
+        fetch('http://127.0.0.1:8000/location/', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
+                Authorization: `Token ${cookies.token}`
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(data)
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error("Location already exists.");
+                    throw new Error('Location already exists.');
                 }
                 return response.json();
             })

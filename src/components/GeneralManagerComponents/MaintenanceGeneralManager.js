@@ -2,41 +2,37 @@ import Path from "../Path";
 import EquipmentTableHeader from "../EquipmentTableHeader";
 import EquipmentTableFooter from "../EquipmentTableFooter";
 import InfosTable from "../Tables/InfosTable";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 const MaintenanceGeneralManager = (props) => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [equipmentData, setEquipmentData] = useState([]);
+    const poorEquipmentData = equipmentData.filter((item) => item.condition === "poor");
     const columnMappings = {
-        "ID": "id",
+        // "ID": "id",
         "IMG": "img",
         "Name": "name",
         "Reference": "reference",
-        "Categories": "categories",
+        "Categories": "categorie",
         "Brand": "brand",
         "Model": "model",
-        "Serial N*": "serialnumber",
-        "Facture N*": "invoiceNumber",
-        "Location": "location",
-        "Purchase-Date": "purchaseDate",
-        "Description": "description",
         "Condition": "condition",
+        "Serial N*": "num_serie",
+        "Facture N*": "facture_number",
+        "Location": "Location",
+        "Assignment-Date": "date_assignment",
+        "Description": "discription",
     };
     const columnTitles = Object.keys(columnMappings);
-    const equipmentData = [{
-        id: 1,
-        img: "equipment1.jpg",
-        name: "Equipment 1",
-        reference: "REF-001",
-        categories: ["Category A"],
-        brand: "Brand A",
-        model: "Model 1",
-        serialnumber: "SN-001",
-        invoiceNumber: "INV-001",
-        location: "Warehouse A",
-        purchaseDate: "2022-01-01",
-        description: "This is equipment 1.",
-        condition: "Poor",
-    }];
+    // displayInventoryData
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/inventory/')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                setEquipmentData(data)
+            })
+    }, [])
     const headerTitle = 'Equipements that needs maintenance'
     const headerButtonName = 'Filter';
 
@@ -48,7 +44,11 @@ const MaintenanceGeneralManager = (props) => {
     const handlePrevPage = () => {
         setCurrentPage(currentPage - 1);
     };
-    const totalPages = Math.ceil(equipmentData.length / 10);
+    const totalPages = Math.ceil(poorEquipmentData.length / 10);
+
+
+
+
     return(
         <>
             <Path pathName={'Maintenance'}/>
@@ -59,13 +59,18 @@ const MaintenanceGeneralManager = (props) => {
                     className={'filter_button'}
                     isFilterButton={true}
                 />
-                <InfosTable
-                    currentPage={currentPage}
-                    columnTitles={columnTitles}
-                    columnMappings={columnMappings}
-                    data={equipmentData}
-                    isInventoryAdmin={true}
-                />
+
+                {poorEquipmentData.length === 0 ? <div style={{padding: '20px'}}>No equipments to be repaired</div> :
+                    (
+                        <InfosTable
+                            currentPage={currentPage}
+                            columnTitles={columnTitles}
+                            columnMappings={columnMappings}
+                            data={poorEquipmentData}
+                            isInventoryAdmin={true}
+                        />
+                    )
+                }
                 <EquipmentTableFooter
                     currentPage={currentPage}
                     handleNextPage={handleNextPage}
