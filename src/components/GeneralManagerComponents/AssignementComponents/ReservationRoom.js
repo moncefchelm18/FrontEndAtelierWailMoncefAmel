@@ -44,7 +44,6 @@ const ReservationRoom = (props) => {
                     </g>
                 </svg>
                 <h2>{title}</h2>
-                <p>{count} item</p>
             </div>
         );
     };

@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 const StockForm = (props) => {
     const [categories, setCategories] = useState([]);
@@ -13,6 +13,7 @@ const StockForm = (props) => {
     const [quantite, setQuantite] = useState('');
     const [description, setDescription] = useState('');
     const [message, setMessage] = useState('');
+    const formRef = useRef(null);
 
     const handleCategoriesChange = (event) => {
         setSelectedCategory(event.target.value);
@@ -20,33 +21,38 @@ const StockForm = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        if (!name || !brand || !model || !selectedCategory || !factureNumber || !datePurchase || !quantite/*|| !event.target.image.files[0]*/){
+            setMessage(<p style={{color: 'red'}}>Please fill all columns!</p>)
+            formRef.current.scrollIntoView({ behavior: 'smooth' });
+        }else{
+            const formData = new FormData();
+            formData.append('created_by', 1);
+            formData.append('name', name);
+            formData.append('brand', brand);
+            formData.append('model', model);
+            formData.append('categorie', selectedCategory);
+            formData.append('facture_number', factureNumber);
+            formData.append('date_purchase', datePurchase);
+            formData.append('quantite', quantite);
+            formData.append('discription', description);
+            formData.append('image', event.target.image.files[0] || '');
 
-        const formData = new FormData();
-        formData.append('created_by', 1);
-        formData.append('name', name);
-        formData.append('brand', brand);
-        formData.append('model', model);
-        formData.append('categorie', selectedCategory);
-        formData.append('facture_number', factureNumber);
-        formData.append('date_purchase', datePurchase);
-        formData.append('quantite', quantite);
-        formData.append('discription', description);
-        formData.append('image', event.target.image.files[0]);
-
-        fetch('http://127.0.0.1:8000/stock/', {
-            method: 'POST',
-            body: formData,
-        })
-            .then(response => response.json())
-            .then(data => {
-                    console.log(data);
-                    props.getUpdatedData(data);
-                    setMessage(<p style={{color:'green'}}>Added to stock succefully!</p>)
-                }
-            )
-            .catch(
-                error => console.error(error)
-            );
+            fetch('http://127.0.0.1:8000/stock/', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                        console.log(data);
+                        props.getUpdatedData(data);
+                        setMessage(<p style={{color:'green'}}>Added to stock succefully!</p>)
+                    }
+                )
+                .catch(
+                    error => console.error(error)
+                );
+            formRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
     };
 
     const handleImageChange = (event) => {
@@ -85,9 +91,12 @@ const StockForm = (props) => {
     });*/
     return(
         <div className="add-form">
-            <h2>New Equipment</h2>
+            <h2 ref={formRef}>New Equipment</h2>
             {message && message}
-            <form onSubmit={handleSubmit} onClick={() => setMessage(null)}>
+            <form
+                onSubmit={handleSubmit}
+                onClick={() => setMessage(null)}
+            >
                 <div className="form-container-form-infos-input-img">
                     <label htmlFor="image">
                         {previewImage ? (

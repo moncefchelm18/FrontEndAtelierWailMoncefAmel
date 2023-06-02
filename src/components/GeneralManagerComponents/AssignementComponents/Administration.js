@@ -50,7 +50,6 @@ const Administration = (props) => {
                     </g>
                 </svg>
                 <h2>{title}</h2>
-                <p>{count} item</p>
             </div>
         );
     };
@@ -88,7 +87,7 @@ const Administration = (props) => {
                                 <OverviewItem
                                     key={index}
                                     title={item.title}
-                                    count={item.count}
+                                    // count={item.count}
                                     index={index}
                                 />
                             </Link>

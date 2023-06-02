@@ -11,9 +11,10 @@ import InfosTable from "../Tables/InfosTable";
 import DeleteConfirmation from "./Forms/DeleteConfirmation";
 import Loading from "../Loading";
 import {useCookies} from "react-cookie";
+import {SearchValueContext} from "../../Pages/usersPages/Admin";
 
 const CategoriesAdmin = () => {
-    const title = 'Equipments categories';
+    // const title = 'Equipments categories';
     const buttonName = 'Add';
     const [showForm, setShowForm] = useState(false); // add state variable to show/hide form
     const [categories, setCategories] = useState([]);
@@ -24,6 +25,7 @@ const CategoriesAdmin = () => {
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
     const [categoryToDelete, setCategoryToDelete] = useState(null);
     const [loading, setLoading] = useState(null);
+    const [searchValueState, setSearchValueState] = useState('');
     const [cookies] = useCookies(['token']);
 
     const columnMappings = {
@@ -95,6 +97,7 @@ const CategoriesAdmin = () => {
         const [name, setName] = useState(props.category.name);
         const [description, setDescription] = useState(props.category.discription);
 
+        console.log(props.category.name)
         const handleNameChange = (event) => {
             setName(event.target.value);
         };
@@ -240,10 +243,16 @@ const CategoriesAdmin = () => {
             {loading ? <Loading/> :
                 (<>
                     <Path pathName={'Categories'}/>
+                    <SearchValueContext.Consumer>
+                        {(searchValue) => {
+                            setSearchValueState(searchValue);
+                            return ;
+                        }}
+                    </SearchValueContext.Consumer>
                     <div className="inventory-table" onClick={() => setUpdateMessage(null)}>
 
                         <EquipmentTableHeader
-                            title={title}
+                            title={`Categories (${categories.length})`}
                             buttonName={buttonName}
                             className={'add-button'}
                             onClick={handleAddClick} // pass the click handler to EquipmentTableHeader
@@ -284,6 +293,7 @@ const CategoriesAdmin = () => {
                             columnMappings={columnMappings}
                             data={categories}
                             actionRenderer={(category) => handleAction(category)}
+                            searchValue={searchValueState}
                         />
 
                         <EquipmentTableFooter

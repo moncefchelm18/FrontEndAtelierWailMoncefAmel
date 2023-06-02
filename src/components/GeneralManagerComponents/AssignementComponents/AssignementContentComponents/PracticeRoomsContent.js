@@ -7,16 +7,22 @@ import EquipmentTableFooter from "../../../EquipmentTableFooter";
 import StockForm from "../../Forms/StockForm";
 import AssignementForm from "./Forms/AssignementForm";
 import {useParams} from "react-router-dom";
+import {SearchValueContext} from "../../../../Pages/usersPages/Admin";
+import ConditionForm from "../../Forms/ConditionForm";
 
 const PracticeRoomsContent = (props) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [inventoryData, setInventoryData] = useState([]);
     const [filteredInventoryData, setFilteredInventoryData] = useState([]);
+    const [searchValueState, setSearchValueState] = useState('');
+    const [assignedEquipment, setAssignedEquipment] = useState(null);
+    const [conditionForm, setConditionForm] = useState(false);
+    const [selectedEquipment, setSelectedEquipment] = useState(null);
 
     const { id } = useParams();
     const columnMappings = {
         // "ID": "id",
-        "IMG": "img",
+        "IMG": "image",
         "Name": "name",
         "Reference": "reference",
         "Categories": "categorie",
@@ -41,14 +47,20 @@ const PracticeRoomsContent = (props) => {
                 setFilteredInventoryData(filteredData);
             })
             .catch((error) => console.error(error));
-    }, [id]);
+    }, [id, assignedEquipment]);
 
     console.log(filteredInventoryData);
 
-    const handleAction = () => {
+    const handleAction = (equipment) => {
         return(
             <>
-                <button>
+                <button
+                    className="action-button"
+                    onClick={() => {
+                        setConditionForm(true);
+                        setSelectedEquipment(equipment);
+                    }}
+                >
                     <svg width="24" height="23" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17.1897 0.685637C17.4315 0.450078 17.7595 0.317749 18.1015 0.317749C18.4435 0.317749 18.7715 0.450078 19.0134 0.685637L22.8827 4.45515C23.1244 4.69078 23.2603 5.01032 23.2603 5.3435C23.2603 5.67668 23.1244 5.99622 22.8827 6.23185L11.2748 17.5404C11.033 17.7761 10.705 17.9085 10.363 17.9086H6.49371C6.15164 17.9086 5.82359 17.7762 5.58171 17.5405C5.33984 17.3049 5.20395 16.9853 5.20395 16.652V12.8825C5.20402 12.5493 5.33996 12.2298 5.58185 11.9942L17.1897 0.685637ZM7.78347 13.4027V15.3955H9.82902L20.1471 5.3435L18.1015 3.35068L7.78347 13.4027ZM0.0449219 5.3435C0.0449219 4.67701 0.316691 4.03781 0.800444 3.56653C1.2842 3.09525 1.94031 2.83049 2.62444 2.83049H9.07322C9.41529 2.83049 9.74334 2.96287 9.98522 3.19851C10.2271 3.43415 10.363 3.75375 10.363 4.087C10.363 4.42024 10.2271 4.73984 9.98522 4.97548C9.74334 5.21112 9.41529 5.3435 9.07322 5.3435H2.62444V20.4216H18.1015V14.139C18.1015 13.8058 18.2374 13.4862 18.4793 13.2506C18.7212 13.0149 19.0492 12.8825 19.3913 12.8825C19.7333 12.8825 20.0614 13.0149 20.3033 13.2506C20.5452 13.4862 20.681 13.8058 20.681 14.139V20.4216C20.681 21.0881 20.4093 21.7272 19.9255 22.1985C19.4418 22.6698 18.7857 22.9346 18.1015 22.9346H2.62444C1.94031 22.9346 1.2842 22.6698 0.800444 22.1985C0.316691 21.7272 0.0449219 21.0881 0.0449219 20.4216V5.3435Z" fill="#04537D"/>
                     </svg>
@@ -61,6 +73,13 @@ const PracticeRoomsContent = (props) => {
             </>
         )
     };
+    const handleUpdateCondition = (updatedEquipment) => {
+        const updatedData = filteredInventoryData.map((equipment) =>
+            equipment.id === updatedEquipment.id ? updatedEquipment : equipment
+        );
+        setFilteredInventoryData(updatedData);
+        // setConditionForm(false);
+    };
 
     // to show form
     const [showForm, setShowForm] = useState(false);
@@ -69,8 +88,11 @@ const PracticeRoomsContent = (props) => {
     }
     const handleCancelForm = () =>{
         setShowForm(false);
+        setConditionForm(false)
     }
-
+    const handleAssignedEquipmentChange = (data) => {
+        setAssignedEquipment(data);
+    };
     // tableFooter
     const handleNextPage = () => {
         setCurrentPage(currentPage + 1);
@@ -97,6 +119,12 @@ const PracticeRoomsContent = (props) => {
 
                 ]}
             />
+            <SearchValueContext.Consumer>
+                {(searchValue) => {
+                    setSearchValueState(searchValue);
+                    return ;
+                }}
+            </SearchValueContext.Consumer>
             <div className="inventory-table">
                 <EquipmentTableHeader title={'List of equipments'}
                                       buttonName="Assign new equipments"
@@ -108,8 +136,11 @@ const PracticeRoomsContent = (props) => {
                 {showForm &&
                     <>
                         <div onClick={handleCancelForm} className="overlay" />
-                        <AssignementForm location={id} handleCancelForm={handleCancelForm}/>
-                    </>
+                        <AssignementForm
+                            location={id}
+                            handleCancelForm={handleCancelForm}
+                            onAssignedEquipmentChange={handleAssignedEquipmentChange}
+                        />                    </>
                 }
                 {filteredInventoryData.length === 0 ? <p style={{padding:'10px 20px'}}>No items avaliable in this location </p>
                     : (
@@ -119,8 +150,19 @@ const PracticeRoomsContent = (props) => {
                             columnMappings={columnMappings}
                             data={filteredInventoryData}
                             actionRenderer={(equipment) => handleAction(equipment)}
+                            searchValue={searchValueState}
                         />
                     )
+                }
+                {conditionForm &&
+                    <>
+                        <div onClick={handleCancelForm} className="overlay" />
+                        <ConditionForm
+                            selectedEquipment={selectedEquipment}
+                            setConditionForm={setConditionForm}
+                            handleUpdateCondition={handleUpdateCondition}
+                        />
+                    </>
                 }
                 <EquipmentTableFooter
                     currentPage={currentPage}

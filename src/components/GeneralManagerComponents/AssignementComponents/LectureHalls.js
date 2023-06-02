@@ -13,7 +13,7 @@ const LectureHalls = (props) => {
     const overviewItems = [];
 
     for (let i = 0; i < lectureHallNames.length; i++) {
-        overviewItems.push({title: lectureHallNames[i], count: 0});
+        overviewItems.push({title: lectureHallNames[i], count: null});
     }
     const OverviewItem = ({title, count, index}) => {
 
@@ -47,7 +47,6 @@ const LectureHalls = (props) => {
                     </g>
                 </svg>
                 <h2>{title}</h2>
-                <p>{count} item</p>
             </div>
         );
     };

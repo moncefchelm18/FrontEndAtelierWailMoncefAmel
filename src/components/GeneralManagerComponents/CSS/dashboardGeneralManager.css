@@ -19,7 +19,7 @@
 
 }
 .dashboard-overall-container {
-    overflow: auto;
+    /*overflow: auto;*/
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -36,7 +36,31 @@
     line-height: 30px;
 }
 
-
+.dashboard-equipment-container{
+    display: flex;
+    gap: 10px;
+}
+.dashboard-equipment-container-2{
+    overflow: auto;
+    width: 50%;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 1px 10px 0 rgba(62, 62, 62, 0.18)
+}
+.dashboard-equipment-container-2 h2{
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+}
+.dashboard-equipment-charts{
+    display: flex;
+    justify-content: center;
+}
 
 .overview-grid {
     display: grid;

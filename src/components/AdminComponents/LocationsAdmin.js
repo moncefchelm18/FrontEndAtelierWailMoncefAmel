@@ -7,6 +7,8 @@ import InfosTable from "../Tables/InfosTable";
 import '../AdminComponents/CSS/myAccount.css';
 import LocationsForm from "./Forms/LocationsForm";
 import {useCookies} from "react-cookie";
+import Loading from "../Loading";
+import {SearchValueContext} from "../../Pages/usersPages/Admin";
 const LocationsAdmin = () => {
     const [showForm, setShowForm] = useState(false);
     const [locations, setLocations] = useState([]);
@@ -15,7 +17,8 @@ const LocationsAdmin = () => {
     const [showUpdatingForm, setShowUpdatingForm] = useState(null)
     const [updateMessage, setUpdateMessage] = useState(null);
     const [cookies] = useCookies(['token']);
-
+    const [loading, setLoading] = useState(null);
+    const [searchValueState, setSearchValueState] = useState('');
 
     const columnMappings = {
         "Location name": "name",
@@ -27,6 +30,7 @@ const LocationsAdmin = () => {
     useEffect(() => {
         const fetchLocations = async () => {
             try {
+                setLoading(true);
                 const response = await fetch('http://127.0.0.1:8000/location/', {
                     headers: {
                         Authorization: `Token ${cookies.token}`
@@ -42,6 +46,9 @@ const LocationsAdmin = () => {
                 }
             } catch (error) {
                 console.log('Error:', error);
+            }
+            finally {
+                setLoading(false);
             }
         };
 
@@ -97,6 +104,7 @@ const LocationsAdmin = () => {
                 discription: description,
                 created_on: props.location.created_on,
             };
+            setLoading(true);
             fetch(`http://127.0.0.1:8000/location/${props.location.id}/`, {
                 method: 'PUT',
                 headers: {
@@ -121,7 +129,7 @@ const LocationsAdmin = () => {
                 .catch(error => {
                     console.log(error);
                 });
-
+            setLoading(false)
             console.log(updatedLocation);
         };
 
@@ -208,6 +216,7 @@ const LocationsAdmin = () => {
     const totalPages = Math.ceil(locations.length / 10);
     // delete button
     const handleDelete = (id) => {
+        setLoading(true);
         fetch(`http://127.0.0.1:8000/location/${id}/`, {
             method: 'DELETE',
             headers: {
@@ -221,6 +230,7 @@ const LocationsAdmin = () => {
                 setLocations(locations.filter((location) => location.id !== id));
             })
             .catch((error) => console.error(error));
+        setLoading(false);
     };
 
     const handleUpdate = (location) => {
@@ -241,41 +251,53 @@ const LocationsAdmin = () => {
 
     return (
         <>
-            <Path pathName={'Locations'}/>
-            <div className="inventory-table">
-                <EquipmentTableHeader
-                    title={'Locations'}
-                    buttonName={'Add'}
-                    className={'add-button'}
-                    onClick={handleAddClick}
-                />
-                {updateMessage && updateMessage}
-                {showForm &&
-                    <Fragment>
-                        <div onClick={handleCancelForm}  className="overlay" />
-                        <LocationsForm handleCancelForm={handleCancelForm} getUpdatedData={getUpdatedData}/>
-                    </Fragment>
-                }
-                {showUpdatingForm &&
-                    <>
-                        <div onClick={handleCancelForm} className="overlay" />
-                        <LocationUpdatingForm location={selectedLocation} />
-                    </>
-                }
-                <InfosTable
-                    currentPage={currentPage}
-                    columnTitles={columnTitles}
-                    columnMappings={columnMappings}
-                    data={locations}
-                    actionRenderer={(location) => handleAction(location)}
-                />
-                <EquipmentTableFooter
-                    currentPage={currentPage}
-                    handleNextPage={handleNextPage}
-                    handlePrevPage={handlePrevPage}
-                    totalPages={totalPages}
-                />
-            </div>
+            {loading ? <Loading/> : (
+                <>
+                    <Path pathName={'Locations'}/>
+                    <SearchValueContext.Consumer>
+                        {(searchValue) => {
+                            setSearchValueState(searchValue);
+                            return ;
+                        }}
+                    </SearchValueContext.Consumer>
+                    <div className="inventory-table" onClick={() => setUpdateMessage(false)}>
+                        <EquipmentTableHeader
+                            title={`Locations (${locations.length})`}
+                            buttonName={'Add'}
+                            className={'add-button'}
+                            onClick={handleAddClick}
+                        />
+                        {updateMessage && updateMessage}
+                        {showForm &&
+                            <Fragment>
+                                <div onClick={handleCancelForm}  className="overlay" />
+                                <LocationsForm handleCancelForm={handleCancelForm} getUpdatedData={getUpdatedData}/>
+                            </Fragment>
+                        }
+                        {showUpdatingForm &&
+                            <>
+                                <div onClick={handleCancelForm} className="overlay" />
+                                <LocationUpdatingForm location={selectedLocation} />
+                            </>
+                        }
+                        <InfosTable
+                            currentPage={currentPage}
+                            columnTitles={columnTitles}
+                            columnMappings={columnMappings}
+                            data={locations}
+                            actionRenderer={(location) => handleAction(location)}
+                            searchValue={searchValueState}
+                        />
+                        <EquipmentTableFooter
+                            currentPage={currentPage}
+                            handleNextPage={handleNextPage}
+                            handlePrevPage={handlePrevPage}
+                            totalPages={totalPages}
+                        />
+                    </div>
+                </>
+            )}
+
         </>
     );
 }

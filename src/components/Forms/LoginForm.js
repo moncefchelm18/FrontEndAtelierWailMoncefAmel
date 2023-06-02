@@ -11,6 +11,10 @@ const LoginForm = (props) => {
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
+        if(!email || !password){
+            // alert('Please fill all columns!')
+            setErrorMessage(<p style={{color: 'red'}}>Please fill all columns!</p>)
+        }
         const data = {
             username: email,
             password: password
@@ -37,7 +41,7 @@ const LoginForm = (props) => {
             }
         } catch (error) {
             console.log(error);
-            setErrorMessage(<p style={{ color: 'red' }}>{error}</p>);
+            // setErrorMessage(<p style={{ color: 'red' }}>{error.toString()}</p>);
         }
     };
 
@@ -47,7 +51,7 @@ const LoginForm = (props) => {
     }else if(cookies.token && cookies.role === 'PRINCIPALMANAGER'){
         return <Navigate to="/GeneralManager" />;
     }else if(cookies.token && cookies.role === 'ALLOCATIONMANAGER'){
-        return <Navigate to="/AllocationManger" />;
+        return <Navigate to="/AllocationManager" />;
     } else if(cookies.token && cookies.role === 'STUDENT'){
         return <Navigate to="/Student" />;
     }else if(cookies.token && cookies.role === 'RESEARCHER'){
@@ -62,7 +66,7 @@ const LoginForm = (props) => {
         setPassword(event.target.value);
     }
     return (
-        <div>
+        <div >
             <div className="login-form-inputfield-label">
                 <label htmlFor="email" className="login-form-inputfield-label-text">
                     Professional Email
@@ -74,6 +78,7 @@ const LoginForm = (props) => {
                     className="login-form-inputfield-input"
                     value={email}
                     onChange={handleUsernameChange}
+                    onClick={() => setErrorMessage(null)}
                 />
             </div>
             <div className="login-form-inputfield-label">
@@ -87,6 +92,7 @@ const LoginForm = (props) => {
                     className="login-form-inputfield-input"
                     value={password}
                     onChange={handlePasswordChange}
+                    onClick={() => setErrorMessage(null)}
                 />
             </div>
             <div className="login-form-row">

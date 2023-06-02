@@ -1,34 +1,112 @@
-import {useState} from "react";
+import {useRef, useState} from "react";
 import '../CSS/myAccount.css';
+import {useCookies} from "react-cookie";
 
 const ManagersForm = (props) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
     const [nationalId, setNationalId] = useState('');
     const [address, setAddress] = useState('');
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log("First Name:", firstName);
-        console.log("Last Name:", lastName);
-        console.log("Email:", email);
-        console.log("Phone:", phone);
-        console.log("National ID:", nationalId);
-        console.log("Address:", address);
-    }
     const [previewImage, setPreviewImage] = useState(null);
+    const [selectedType, setSelectedType] = useState('General Manager');
+    const [message, setMessage] = useState(null)
+    const [cookies] = useCookies(['token']);
+    const formRef = useRef(null);
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+
+        formRef.current.scrollIntoView({ behavior: 'smooth' });
+        if (!password || !firstName || !lastName || !email || !phone || !nationalId || !address) {
+            setMessage(<p style={{color: 'red', padding:'10px 0px'}}>Please fill all the fields!</p>)
+            return;
+        }
+        const phoneRegex = /^(05|06|07)\d{8}$/;
+        if (!phoneRegex.test(phone)) {
+            setMessage(<p style={{color: 'red', padding:'10px 0px'}}>Phone number must start with '05', '06', or '07' and have 10 digits.</p>)
+            return;
+        }
+
+        let url = "";
+        if (selectedType === "General Manager") {
+            url = "http://127.0.0.1:8000/profiles/principalmanagers/";
+        } else if (selectedType === "Allocation Manager") {
+            url = "http://127.0.0.1:8000/profiles/Allocationmanager/";
+        }
+
+        const data = {
+            password: password,
+            name: firstName,
+            lastname: lastName,
+            email: email,
+            phonenumber: phone,
+            national_card_number: nationalId,
+            address: address
+        };
+        console.log(url);
+        console.log(data)
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => {
+                console.log(response)
+                if (response.ok) {
+                    // Manager added successfully
+                    // Perform any additional actions or update state as needed
+                    console.log('Manager added successfully');
+                }
+                else {
+                    // Error occurred during manager addition
+                    console.error('Error adding manager:', response.statusText);
+                }
+            })
+            .catch(error => {
+                // Error occurred during the request
+                console.error('Request failed:', error);
+            });
+    };
 
     const handleImageChange = (event) => {
         const imageFile = event.target.files[0];
         const imageUrl = URL.createObjectURL(imageFile);
         setPreviewImage(imageUrl);
     }
+    const handleFirstNameChange = (event) => {
+        setFirstName(event.target.value);
+    };
+    const handleLastNameChange = (event) => {
+        setLastName(event.target.value);
+    };
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+    }
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+    const handlePhoneChange = (event) => {
+        setPhone(event.target.value);
+    };
+    const handleNationalIdChange = (event) => {
+        setNationalId(event.target.value);
+    };
+    const handleAddressChange = (event) => {
+        setAddress(event.target.value);
+    };
     return(
         <div className="add-form">
             <h2>New Manager</h2>
-            <form>
+            <form
+                ref={formRef}
+                onSubmit={handleFormSubmit}
+                onClick={() => setMessage(null)}
+            >
                 <div className="form-container-form-infos-input-img">
                     <label htmlFor="image">
                         {previewImage ? (
@@ -59,6 +137,21 @@ const ManagersForm = (props) => {
                         <label htmlFor="image" className="input-browse">Browse image</label>
                     </div>
                 </div>
+                {message && message}
+                <div className="add-form-input">
+                    <label htmlFor="type">
+                        Type
+                    </label>
+                    <select
+                        id="type"
+                        className="add-form-input-select"
+                        value={selectedType}
+                        onChange={(event) => setSelectedType(event.target.value)}
+                    >
+                        <option value="General Manager">General Manager</option>
+                        <option value="Allocation Manager">Allocation Manager</option>
+                    </select>
+                </div>
                 <div className="add-form-input">
                     <label htmlFor="firstname">
                         First Name
@@ -68,6 +161,8 @@ const ManagersForm = (props) => {
                         id="firstname"
                         className="add-form-input-input"
                         placeholder="Enter first name"
+                        value={firstName}
+                        onChange={handleFirstNameChange}
                     />
                 </div>
                 <div className="add-form-input">
@@ -79,6 +174,8 @@ const ManagersForm = (props) => {
                         id="lastname"
                         className="add-form-input-input"
                         placeholder="Enter last name"
+                        value={lastName}
+                        onChange={handleLastNameChange}
                     />
                 </div>
                 <div className="add-form-input">
@@ -90,28 +187,34 @@ const ManagersForm = (props) => {
                         id="email"
                         className="add-form-input-input"
                         placeholder="Enter email address"
+                        value={email}
+                        onChange={handleEmailChange}
                     />
                 </div>
                 <div className="add-form-input">
-                    <label htmlFor="type">
-                        Type
+                    <label htmlFor="password">
+                        Password
                     </label>
-                    <select id="type" className="add-form-input-select">
-                        <option value="" disabled selected hidden>Select a type</option>
-                        <option value="General Manager">General Manager</option>
-                        <option value="Allocation Manager">Allocation Manager</option>
-                    </select>
+                    <input
+                        type="password"
+                        id="password"
+                        className="add-form-input-input"
+                        placeholder="Enter password"
+                        value={password}
+                        onChange={handlePasswordChange}
+                    />
                 </div>
-
                 <div className="add-form-input">
                     <label htmlFor="phone">
                         Phone
                     </label>
                     <input
-                        type="text"
+                        type="number"
                         id="phone"
                         className="add-form-input-input"
                         placeholder="Enter phone number"
+                        value={phone}
+                        onChange={handlePhoneChange}
                     />
                 </div>
                 <div className="add-form-input">
@@ -123,6 +226,8 @@ const ManagersForm = (props) => {
                         id="nationalId"
                         className="add-form-input-input"
                         placeholder="Enter national ID number"
+                        value={nationalId}
+                        onChange={handleNationalIdChange}
                     />
                 </div>
                 <div className="add-form-input">
@@ -134,6 +239,8 @@ const ManagersForm = (props) => {
                         id="address"
                         className="add-form-input-input"
                         placeholder="Enter address"
+                        value={address}
+                        onChange={handleAddressChange}
                     />
                 </div>
                 <div className="add-form-actions">

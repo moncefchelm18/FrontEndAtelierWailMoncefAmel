@@ -74,6 +74,14 @@
     color: #FFFFFF;
 }
 /*table*/
+/*.highlight{
+    color: red;
+    background: blue;
+    background-color: yellow;
+}*/
+.no-results{
+    padding: 20px 10px 0px;
+}
 .equipments-table{
     background: white;
     border-radius: 10px;
@@ -144,7 +152,16 @@
 .equipment-table-cell.stolen {
     color: #500f0f;
 }
-
+.equipment-table-cell.active {
+    color: green;
+}
+.equipment-table-cell.panding {
+    color: orange;
+}
+.bold-text {
+    font-weight: bold;
+    color: black;
+}
 
 .equipment-table-table {
     display: grid;

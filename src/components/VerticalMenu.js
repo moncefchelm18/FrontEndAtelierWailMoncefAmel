@@ -9,11 +9,12 @@ import {useCookies} from "react-cookie";
 
 
 const VerticalMenu = (props) => {
-    const [cookies, setCookie, removeCookie] = useCookies(['token']);
+    const [cookies, setCookie, removeCookie] = useCookies(['token', 'role']);
     const handleLogout = () => {
+        window.location.reload();
         // Remove the 'token' cookie
         removeCookie('token');
-        removeCookie('role');
+        removeCookie('role', { path: '/' });
     };
 
     return(

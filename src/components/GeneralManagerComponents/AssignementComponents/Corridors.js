@@ -13,7 +13,7 @@ const Corridors = (props) => {
     const overviewItems = [];
 
     for (let i = 0; i < corridorsNames.length; i++) {
-        overviewItems.push({title: corridorsNames[i], count: 0});
+        overviewItems.push({title: corridorsNames[i]});
     }
 
     const OverviewItem = ({title, count, index}) => {
@@ -50,7 +50,6 @@ const Corridors = (props) => {
                     </g>
                 </svg>
                 <h2>{title}</h2>
-                <p>{count} item</p>
             </div>
         );
     };
@@ -88,7 +87,7 @@ const Corridors = (props) => {
                                 <OverviewItem
                                     key={index}
                                     title={item.title}
-                                    count={item.count}
+                                    // count={item.count}
                                     index={index}
                                 />
                             </Link>

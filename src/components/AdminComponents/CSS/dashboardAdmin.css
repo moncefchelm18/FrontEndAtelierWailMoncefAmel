@@ -20,7 +20,7 @@
 
 }
 .dashboard-overall-container {
-    overflow: auto;
+    /*overflow: auto;*/
     background: white;
     padding: 20px;
     border-radius: 10px;
@@ -148,7 +148,7 @@
     font-size: 18px;
     line-height: 20px;
     color: #FFFFFF;
-    box-shadow: 0px 1px 10px 0 rgba(62, 62, 62, 0.18);
+    box-shadow: rgb(105, 105, 105) 0px 5px 15px;
 
 }
 .allocations-header:hover {
@@ -156,6 +156,26 @@
     transition: 0.5s;
     cursor: pointer;
 }
+.allocations-header.pending{
+    background: #989531;
+    box-shadow: rgba(206, 165, 0, 0.74) 0px 5px 15px;
+}
+.allocations-header.pending:hover{
+    /*background-color: rgba(206, 165, 0, 0.74);*/
+    transition: 0.5s;
+    cursor: pointer;
+}
+.allocations-header.active{
+    background: #318580;
+    box-shadow: rgba(0, 114, 2, 0.72) 0px 5px 15px;
+}
+.allocations-header.active:hover{
+    /*background-color: rgba(0, 114, 2, 0.72);*/
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+
 
 /* Total overview */
 /*

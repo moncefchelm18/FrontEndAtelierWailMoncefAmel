@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {useCookies} from "react-cookie";
+import Loading from "../../Loading";
 
 const LocationsForm = (props) => {
     const [name, setName] = useState("");
@@ -8,6 +9,7 @@ const LocationsForm = (props) => {
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
     const [cookies] = useCookies(['token']);
+    const [loading, setLoading] = useState(null);
 
     // Error and success messages
     const ErrorMessage = ({ title }) => {
@@ -36,7 +38,7 @@ const LocationsForm = (props) => {
             type: type,
             created_on: new Date(),
         };
-
+        setLoading(true);
         fetch('http://127.0.0.1:8000/location/', {
             method: 'POST',
             headers: {
@@ -62,6 +64,7 @@ const LocationsForm = (props) => {
                 setError(<ErrorMessage title={error.message} />);
                 setSuccessMessage(null);
             });
+        setLoading(false);
     };
 
     const TYPE_CHOICES = [
@@ -75,68 +78,74 @@ const LocationsForm = (props) => {
         ["stocks", "Stocks"],
     ];
     return (
-        <div className="add-form">
-            <h2>New equipment location</h2>
-            {error && error}
-            {successMessage && successMessage}
-            <form onSubmit={handleSubmit}>
-                <div className="add-form-input">
-                    <label htmlFor="location">Location</label>
-                    <input
-                        type="text"
-                        id="location"
-                        className="add-form-input-input"
-                        placeholder="Enter location name"
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
-                        onFocus={() => {
-                            setError(null);
-                            setSuccessMessage(null);
-                        }}
-                    />
-                </div>
-                <div className="add-form-input">
-                    <label htmlFor="type">Type</label>
-                    <select
-                        id="type"
-                        className="add-form-input-input"
-                        value={type}
-                        onChange={(event) => setType(event.target.value)}
-                        onFocus={() => {
-                            setError(null);
-                            setSuccessMessage(null);
-                        }}
-                    >
-                        <option value="">--Select type--</option>
-                        {TYPE_CHOICES.map(([value, label]) => (
-                            <option value={value} key={value}>
-                                {label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="add-form-input">
-                    <label htmlFor="description">Description</label>
-                    <input
-                        type="text"
-                        id="description"
-                        className="add-form-input-input"
-                        placeholder="Write a description"
-                        value={description}
-                        onChange={(event) => setDescription(event.target.value)}
-                        onFocus={() => {
-                            setError(null);
-                            setSuccessMessage(null);
-                        }}
-                    />
-                </div>
-                <div className="add-form-actions">
-                    <button type="submit" className="add-form-actions-submit">Add Location</button>
-                    <button className="add-form-actions-discard" onClick={props.handleCancelForm}>Discard</button>
+        <>
+            {loading ? <Loading/> : (
+                <>
+                    <div className="add-form">
+                        <h2>New equipment location</h2>
+                        {error && error}
+                        {successMessage && successMessage}
+                        <form onSubmit={handleSubmit}>
+                            <div className="add-form-input">
+                                <label htmlFor="location">Location</label>
+                                <input
+                                    type="text"
+                                    id="location"
+                                    className="add-form-input-input"
+                                    placeholder="Enter location name"
+                                    value={name}
+                                    onChange={(event) => setName(event.target.value)}
+                                    onFocus={() => {
+                                        setError(null);
+                                        setSuccessMessage(null);
+                                    }}
+                                />
+                            </div>
+                            <div className="add-form-input">
+                                <label htmlFor="type">Type</label>
+                                <select
+                                    id="type"
+                                    className="add-form-input-input"
+                                    value={type}
+                                    onChange={(event) => setType(event.target.value)}
+                                    onFocus={() => {
+                                        setError(null);
+                                        setSuccessMessage(null);
+                                    }}
+                                >
+                                    <option value="">--Select type--</option>
+                                    {TYPE_CHOICES.map(([value, label]) => (
+                                        <option value={value} key={value}>
+                                            {label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="add-form-input">
+                                <label htmlFor="description">Description</label>
+                                <input
+                                    type="text"
+                                    id="description"
+                                    className="add-form-input-input"
+                                    placeholder="Write a description"
+                                    value={description}
+                                    onChange={(event) => setDescription(event.target.value)}
+                                    onFocus={() => {
+                                        setError(null);
+                                        setSuccessMessage(null);
+                                    }}
+                                />
+                            </div>
+                            <div className="add-form-actions">
+                                <button type="submit" className="add-form-actions-submit">Add Location</button>
+                                <button className="add-form-actions-discard" onClick={props.handleCancelForm}>Discard</button>
 
-                </div>
-            </form>
-        </div>
+                            </div>
+                        </form>
+                    </div>
+                </>
+            )}
+        </>
     );
 };
 

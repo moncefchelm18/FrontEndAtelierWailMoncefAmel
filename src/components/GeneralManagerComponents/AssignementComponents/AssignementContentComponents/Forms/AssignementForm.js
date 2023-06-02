@@ -13,6 +13,8 @@ const AssignementForm = (props) => {
     const [selectedModel, setSelectedModel] = useState("");
     const [equipmentModels, setEquipmentModels] = useState([]);
     const [quantity, setQuantity] = useState(1);
+    const [message, setMessage] = useState(null);
+
 
     // getting-stock-data
     useEffect(() => {
@@ -29,35 +31,46 @@ const AssignementForm = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!selectedEquipmentName || !selectedBrand || !selectedModel) {
-            alert("Please select equipment, brand and model");
+        if (!selectedCategory || !selectedEquipmentName || !selectedBrand || !selectedModel || !quantity) {
+            setMessage(<p style={{ color: 'red' }}>Please fill all columns!</p>);
             return;
         }
         if (quantity > filteredStockData.length) {
             alert("Quantity is greater than available stock");
             return;
-        }
-        for (let i = 0; i < quantity; i++) {
-            const randomIndex = Math.floor(
-                Math.random() * filteredStockData.length
-            );
-            const reference = filteredStockData[randomIndex].reference;
-            const data = { reference: reference, Location: props.location };
-            // console.log(data);
-            fetch("http://127.0.0.1:8000/affectation", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            })
-                .then((response) => response.json())
-                .then((responseData) => {
-                    console.log(responseData);
+        }else{
+            let updatedFilteredStockData = [...filteredStockData]; // Create a local copy to store the filtered data
+
+            for (let i = 0; i < quantity; i++) {
+                const randomIndex = Math.floor(Math.random() * updatedFilteredStockData.length);
+                const reference = updatedFilteredStockData[randomIndex].reference;
+                const data = { reference: reference, Location: props.location };
+                fetch("http://127.0.0.1:8000/affectation", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
                 })
-                .catch((error) => {
-                    console.error(error);
-                });
+                    .then((response) => response.json())
+                    .then((responseData) => {
+                        console.log(responseData);
+                        props.onAssignedEquipmentChange(responseData);
+                        setMessage(<p style={{ color: 'green' }}>{responseData.messge}</p>);
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        setMessage(<p style={{ color: 'red' }}>{error}</p>);
+                    });
+
+                // Remove the assigned equipment from the local filtered data
+                updatedFilteredStockData = updatedFilteredStockData.filter(
+                    (item, index) => index !== randomIndex
+                );
+            }
+            // Update the state with the final filtered data after the loop finishes
+            setFilteredStockData(updatedFilteredStockData);
         }
     };
+
 
 
     // forCategorieOptionList
@@ -92,7 +105,7 @@ const AssignementForm = (props) => {
         }
     }, [selectedCategory, stockData]);
 
-    console.log(filteredStockData);
+    // console.log(filteredStockData);
 
     useEffect(() => {
         if (selectedCategory) {
@@ -175,6 +188,7 @@ const AssignementForm = (props) => {
                     item.model === selectedModel
             );
             setFilteredStockData(filteredData);
+            console.log(filteredStockData)
         }
         else if (selectedCategory && selectedEquipmentName && selectedBrand) {
             const filteredData = stockData.filter(
@@ -184,6 +198,7 @@ const AssignementForm = (props) => {
                     item.brand === selectedBrand
             );
             setFilteredStockData(filteredData);
+
         }
         else if (selectedCategory && selectedEquipmentName) {
             const filteredData = stockData.filter(
@@ -204,8 +219,9 @@ const AssignementForm = (props) => {
     // console.log(filteredStockData);
 
     return (
-        <div className="add-form">
+        <div className="add-form" onClick={() => setMessage(null)}>
             <h2>Assign new equipments</h2>
+            {message && message}
             <form onSubmit={handleSubmit}>
                 <div className="add-form-input">
                     <label htmlFor="categories">

@@ -1,56 +1,129 @@
 import Path from "../Path";
 import EquipmentTableHeader from "../EquipmentTableHeader";
-import {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import UsersForm from "./Forms/UsersForm";
+import EquipmentTableFooter from "../EquipmentTableFooter";
+import InfosTable from "../Tables/InfosTable";
+import {useCookies} from "react-cookie";
+import {SearchValueContext} from "../../Pages/usersPages/Admin";
+import DeleteConfirmation from "../AdminComponents/Forms/DeleteConfirmation";
 
 const UsersAllocationManager = (props) => {
-    const managerData = [
-        {
-            id: 1,
-            img: "https://example.com/image1.jpg",
-            firstName: "John",
-            lastName: "Doe",
-            email: "johndoe@example.com",
-            password: "password123",
-            role: "Researcher",
-            phone: "+1-555-555-5555",
-            nationalId: "1234567890",
-            address: "123 Main St, Anytown, USA"
-        },
-        {
-            id: 2,
-            img: "https://example.com/image2.jpg",
-            firstName: "Jane",
-            lastName: "Doe",
-            email: "janedoe@example.com",
-            password: "password456",
-            role: "Student",
-            phone: "+1-555-555-5555",
-            nationalId: "0987654321",
-            address: "456 Main St, Anytown, USA"
-        },
-        // more manager data objects can be added here...
-    ];
     const [showForm, setShowForm] = useState(false);
-    const handleAddClick = () => {
-        setShowForm(true); // show form when Add button is clicked
+    const [currentPage, setCurrentPage] = useState(1);
+    const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
+    const [usersData, setUsersData] = useState([]);
+    const [userToDelete, setUserToDelete] = useState(null)
+    const [updateMessage, setUpdateMessage] = useState(null);
+    const [cookies] = useCookies(['token']);
+    const [searchValueState, setSearchValueState] = useState('');
+
+    const columnMappings = {
+        "ID": "id",
+        "IMG": "img",
+        "Firstname":"name",
+        "Lastname":"lastname",
+        "Email":"email",
+        // "Password":"password",
+        "Role":"role",
+        "Phone":"phonenumber",
+        "National ID":"national_card_number",
+        "Address":"address"
+    };
+    const columnTitles = Object.keys(columnMappings);
+    useEffect(() => {
+        const fetchUsersData = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/profiles/users/', {
+                    headers: {
+                        Authorization: `Token ${cookies.token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const filteredUsers = data.filter(
+                        (user) =>
+                            user.role === 'RESEARCHER' || user.role === 'STUDENT'
+                    );
+                    setUsersData(filteredUsers);
+                } else {
+                    // Handle error response
+                    console.log('Error:', response.status);
+                }
+            } catch (error) {
+                console.log('Error:', error);
+            }
+        };
+
+        fetchUsersData();
+    }, [cookies.token, usersData]);
+    const handleAction = (user) => {
+        return(
+            <>
+                <button onClick={() => {
+                    setUserToDelete(user.id);
+                    setShowDeleteConfirmation(true);
+                }} className="action-button">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.15778 2.71025C6.15778 2.08315 6.40237 1.48173 6.83774 1.03831C7.27312 0.594879 7.86361 0.345764 8.47932 0.345764H15.4439C16.0596 0.345764 16.6501 0.594879 17.0855 1.03831C17.5209 1.48173 17.7655 2.08315 17.7655 2.71025V5.07474H22.4085C22.7164 5.07474 23.0116 5.19929 23.2293 5.42101C23.447 5.64272 23.5693 5.94343 23.5693 6.25698C23.5693 6.57053 23.447 6.87124 23.2293 7.09295C23.0116 7.31466 22.7164 7.43922 22.4085 7.43922H21.1677L20.1613 21.794C20.1196 22.3906 19.8575 22.9488 19.4278 23.3564C18.9981 23.764 18.4327 23.9906 17.8456 23.9906H6.07653C5.48934 23.9906 4.92396 23.764 4.49427 23.3564C4.06457 22.9488 3.80249 22.3906 3.7608 21.794L2.75673 7.43922H1.51471C1.20686 7.43922 0.91161 7.31466 0.693924 7.09295C0.476238 6.87124 0.353943 6.57053 0.353943 6.25698C0.353943 5.94343 0.476238 5.64272 0.693924 5.42101C0.91161 5.19929 1.20686 5.07474 1.51471 5.07474H6.15778V2.71025ZM8.47932 5.07474H15.4439V2.71025H8.47932V5.07474ZM5.08291 7.43922L6.07769 21.6261H17.8467L18.8415 7.43922H5.08291ZM9.64009 9.80371C9.94794 9.80371 10.2432 9.92827 10.4609 10.15C10.6786 10.3717 10.8009 10.6724 10.8009 10.986V18.0794C10.8009 18.393 10.6786 18.6937 10.4609 18.9154C10.2432 19.1371 9.94794 19.2617 9.64009 19.2617C9.33223 19.2617 9.03698 19.1371 8.8193 18.9154C8.60161 18.6937 8.47932 18.393 8.47932 18.0794V10.986C8.47932 10.6724 8.60161 10.3717 8.8193 10.15C9.03698 9.92827 9.33223 9.80371 9.64009 9.80371ZM14.2832 9.80371C14.591 9.80371 14.8863 9.92827 15.1039 10.15C15.3216 10.3717 15.4439 10.6724 15.4439 10.986V18.0794C15.4439 18.393 15.3216 18.6937 15.1039 18.9154C14.8863 19.1371 14.591 19.2617 14.2832 19.2617C13.9753 19.2617 13.6801 19.1371 13.4624 18.9154C13.2447 18.6937 13.1224 18.393 13.1224 18.0794V10.986C13.1224 10.6724 13.2447 10.3717 13.4624 10.15C13.6801 9.92827 13.9753 9.80371 14.2832 9.80371Z" fill="#E01515"/>
+                    </svg>
+                </button>
+            </>
+
+        )
+    };
+    const handleDelete = (id) => {
+        fetch(`http://127.0.0.1:8000/profiles/users/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log(response)
+                    console.log('User deleted successfully');
+                } else {
+                    console.error('Error deleting user:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Request failed:', error);
+            });
     }
+
     const handleCancelForm = () =>{
-        setShowForm(false);
+        setShowDeleteConfirmation(false);
     }
+    // for-bottom-table-handle-pages
+    const handleNextPage = () => {
+        setCurrentPage(currentPage + 1);
+    };
+    const handlePrevPage = () => {
+        setCurrentPage(currentPage - 1);
+    };
+    const totalPages = Math.ceil(usersData.length / 10);
     return(
         <>
             <Path pathName={'Users'}/>
+            <SearchValueContext.Consumer>
+                {(searchValue) => {
+                    setSearchValueState(searchValue);
+                    return ;
+                }}
+            </SearchValueContext.Consumer>
             <div className="inventory-table">
                 <EquipmentTableHeader
                     title={'List of users'}
                     buttonName={'Filter'}
-                    buttonName2={'Add user'}
+                    // buttonName2={'Add user'}
                     className={'filter_button'}
-                    className3={'add-button'}
-                    isAddButton={true}
+                    // className3={'add-button'}
+                    // isAddButton={true}
                     isFilterButton={true}
-                    onClicks={handleAddClick}
+                    // onClicks={handleAddClick}
                 />
                 {showForm &&
                     <Fragment>
@@ -58,56 +131,37 @@ const UsersAllocationManager = (props) => {
                         <UsersForm handleCancelForm={handleCancelForm}/>
                     </Fragment>
                 }
-                <div className="equipments-table">
-                    <div className="equipment-table-wrapper">
-                        <div className="equipment-table-table">
-                            <table className="equipment-table">
-                                <thead className="equipment-table-head">
-                                <tr>
-                                    <th className="equipment-table-header">ID</th>
-                                    <th className="equipment-table-header">IMG</th>
-                                    <th className="equipment-table-header">First Name</th>
-                                    <th className="equipment-table-header">Last Name</th>
-                                    <th className="equipment-table-header">Email</th>
-                                    <th className="equipment-table-header">Password</th>
-                                    <th className="equipment-table-header">Role</th>
-                                    <th className="equipment-table-header">Phone</th>
-                                    <th className="equipment-table-header">National ID</th>
-                                    <th className="equipment-table-header">Address</th>
-                                    <th className="equipment-table-header">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody className="equipment-table-body">
-                                {managerData.map((manager) => (
-                                    <tr key={manager.id}>
-                                        <td className="equipment-table-cell">{manager.id}</td>
-                                        <td className="equipment-table-cell">
-                                            <img src={manager.img} alt={manager.firstName} />
-                                        </td>
-                                        <td className="equipment-table-cell">{manager.firstName}</td>
-                                        <td className="equipment-table-cell">{manager.lastName}</td>
-                                        <td className="equipment-table-cell">{manager.email}</td>
-                                        <td className="equipment-table-cell">{manager.password}</td>
-                                        <td className="equipment-table-cell">{manager.role}</td>
-                                        <td className="equipment-table-cell">{manager.phone}</td>
-                                        <td className="equipment-table-cell">{manager.nationalId}</td>
-                                        <td className="equipment-table-cell">{manager.address}</td>
-                                        <td className="equipment-table-cell">
-                                            <button>
-                                                <svg width="26" height="23" viewBox="0 0 26 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M6.96872 2.3C6.96872 1.69 7.22364 1.10499 7.67741 0.673654C8.13118 0.242321 8.74661 0 9.38834 0H16.6472C17.2889 0 17.9043 0.242321 18.3581 0.673654C18.8119 1.10499 19.0668 1.69 19.0668 2.3V4.6H23.906C24.2269 4.6 24.5346 4.72116 24.7615 4.93683C24.9884 5.15249 25.1158 5.445 25.1158 5.75C25.1158 6.055 24.9884 6.34751 24.7615 6.56317C24.5346 6.77884 24.2269 6.9 23.906 6.9H22.6128L21.5638 20.8633C21.5204 21.4436 21.2472 21.9866 20.7994 22.3831C20.3515 22.7796 19.7623 23 19.1503 23H6.88403C6.27204 23 5.68277 22.7796 5.23493 22.3831C4.78708 21.9866 4.51392 21.4436 4.47047 20.8633L3.42398 6.9H2.12949C1.80863 6.9 1.50091 6.77884 1.27402 6.56317C1.04714 6.34751 0.919678 6.055 0.919678 5.75C0.919678 5.445 1.04714 5.15249 1.27402 4.93683C1.50091 4.72116 1.80863 4.6 2.12949 4.6H6.96872V2.3ZM9.38834 4.6H16.6472V2.3H9.38834V4.6ZM5.84844 6.9L6.88524 20.7H19.1515L20.1883 6.9H5.84844ZM10.5981 9.2C10.919 9.2 11.2267 9.32116 11.4536 9.53683C11.6805 9.75249 11.808 10.045 11.808 10.35V17.25C11.808 17.555 11.6805 17.8475 11.4536 18.0632C11.2267 18.2788 10.919 18.4 10.5981 18.4C10.2773 18.4 9.96957 18.2788 9.74268 18.0632C9.5158 17.8475 9.38834 17.555 9.38834 17.25V10.35C9.38834 10.045 9.5158 9.75249 9.74268 9.53683C9.96957 9.32116 10.2773 9.2 10.5981 9.2ZM15.4374 9.2C15.7582 9.2 16.066 9.32116 16.2928 9.53683C16.5197 9.75249 16.6472 10.045 16.6472 10.35V17.25C16.6472 17.555 16.5197 17.8475 16.2928 18.0632C16.066 18.2788 15.7582 18.4 15.4374 18.4C15.1165 18.4 14.8088 18.2788 14.5819 18.0632C14.355 17.8475 14.2276 17.555 14.2276 17.25V10.35C14.2276 10.045 14.355 9.75249 14.5819 9.53683C14.8088 9.32116 15.1165 9.2 15.4374 9.2Z"
-                                                        fill="#E01515"/>
-                                                </svg>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                {showDeleteConfirmation &&
+                    <>
+                        <div onClick={handleCancelForm} className="overlay" />
+                        <DeleteConfirmation
+                            onCancel={handleCancelForm}
+                            onDelete={() => {
+                                handleDelete(userToDelete);
+                                setUpdateMessage(
+                                    <p style={{color: "red", paddingLeft: "20px", paddingTop: "10px"}}>
+                                        Manager deleted successfully!
+                                    </p>
+                                );
+                                setShowDeleteConfirmation(false);
+                            }}
+                        />
+                    </>
+                }
+                <InfosTable
+                    currentPage={currentPage}
+                    columnTitles={columnTitles}
+                    columnMappings={columnMappings}
+                    data={usersData}
+                    actionRenderer={(users) => handleAction(users)}
+                    searchValue={searchValueState}
+                />
+                <EquipmentTableFooter
+                    currentPage={currentPage}
+                    handleNextPage={handleNextPage}
+                    handlePrevPage={handlePrevPage}
+                    totalPages={totalPages}
+                />
             </div>
 
         </>

@@ -43,9 +43,9 @@ const Assignement = (props) => {
                     <div className="inventory-table">
                         <EquipmentTableHeader
                             title={headerTitle}
-                            buttonName={headerButtonName}
+                            /*buttonName={headerButtonName}
                             className={"filter_button"}
-                            isFilterButton={true}
+                            isFilterButton={true}*/
                         />
                         <br />
                     </div>

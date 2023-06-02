@@ -4,10 +4,11 @@ import {Calendar, momentLocalizer} from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import StockForm from "../GeneralManagerComponents/Forms/StockForm";
-import {Fragment, useState} from "react";
+import React, {Fragment, useState} from "react";
 import HPCAllocationForm from "./Forms/HPCAllocationForm";
 import InfosTable from "../Tables/InfosTable";
 import EquipmentTableFooter from "../EquipmentTableFooter";
+import {SearchValueContext} from "../../Pages/usersPages/Admin";
 
 
 
@@ -15,6 +16,7 @@ const localizer = momentLocalizer(moment);
 const HPCScheduleResearcher = (props) => {
     const [showForm, setShowForm] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchValueState, setSearchValueState] = useState('');
     const equipmentData = [
         {
             id: 1,
@@ -83,6 +85,12 @@ const HPCScheduleResearcher = (props) => {
     return(
         <>
             <Path pathName={'HPC Schedule'}/>
+            <SearchValueContext.Consumer>
+                {(searchValue) => {
+                    setSearchValueState(searchValue);
+                    return ;
+                }}
+            </SearchValueContext.Consumer>
             <div className="inventory-table">
                 <EquipmentTableHeader
                     title={'My HPC allocation'}
@@ -91,11 +99,13 @@ const HPCScheduleResearcher = (props) => {
                     className={'filter_button'}
                     onClick={handleAddClick}
                 />
-                <InfosTable columnTitles={columnTitles}
-                            columnMappings={columnMappings}
-                            data={equipmentData}
-                            currentPage={currentPage}
-                            actionRenderer={handleAction}
+                <InfosTable
+                    columnTitles={columnTitles}
+                    columnMappings={columnMappings}
+                    data={equipmentData}
+                    currentPage={currentPage}
+                    actionRenderer={handleAction}
+                    searchValue={searchValueState}
                 />
                 <EquipmentTableFooter/>
 

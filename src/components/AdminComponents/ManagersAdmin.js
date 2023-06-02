@@ -9,13 +9,17 @@ import ManagersForm from "./Forms/ManagersForm";
 import InfosTable from "../Tables/InfosTable";
 import DeleteConfirmation from "./Forms/DeleteConfirmation";
 import {useCookies} from "react-cookie";
+import {SearchValueContext} from "../../Pages/usersPages/Admin";
 
 const ManagersAdmin = () => {
     const [showForm, setShowForm] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(null);
     const [managerData, setManagerData] = useState([]);
+    const [managerToDelete, setManagerToDelete] = useState(null)
+    const [updateMessage, setUpdateMessage] = useState(null);
     const [cookies] = useCookies(['token']);
+    const [searchValueState, setSearchValueState] = useState('');
 
     const columnMappings = {
         "ID": "id",
@@ -23,7 +27,7 @@ const ManagersAdmin = () => {
         "Firstname":"name",
         "Lastname":"lastname",
         "Email":"email",
-        "Password":"password",
+        // "Password":"password",
         "Role":"role",
         "Phone":"phonenumber",
         "National ID":"national_card_number",
@@ -56,12 +60,12 @@ const ManagersAdmin = () => {
         };
 
         fetchManagerData();
-    }, [cookies.token]);
+    }, [cookies.token, managerData]);
     const handleAction = (manager) => {
         return(
             <>
                 <button onClick={() => {
-                    // setManagerToDelete(manager.id);
+                    setManagerToDelete(manager.id);
                     setShowDeleteConfirmation(true);
                 }} className="action-button">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -72,7 +76,26 @@ const ManagersAdmin = () => {
 
         )
     };
-
+    const handleDelete = (id) => {
+        fetch(`http://127.0.0.1:8000/profiles/users/${id}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log(response)
+                    console.log('User deleted successfully');
+                } else {
+                    console.error('Error deleting user:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Request failed:', error);
+            });
+    }
     const handleAddClick = () => {
         setShowForm(true); // show form when Add button is clicked
     }
@@ -93,17 +116,24 @@ const ManagersAdmin = () => {
     return (
         <>
             <Path pathName={'Managers'} />
-            <div className="inventory-table">
+            <SearchValueContext.Consumer>
+                {(searchValue) => {
+                    setSearchValueState(searchValue);
+                    return ;
+                }}
+            </SearchValueContext.Consumer>
+            <div className="inventory-table" onClick={() => setUpdateMessage(null)}>
                 <EquipmentTableHeader
                     title={'List of managers'}
-                    buttonName={'Filter'}
+                    // buttonName={'Filter'}
                     buttonName2={'Add manager'}
-                    className={'filter_button'}
+                    // className={'filter_button'}
                     className3={'add-button'}
                     isAddButton={true}
-                    isFilterButton={true}
+                    // isFilterButton={true}
                     onClicks={handleAddClick}
                 />
+                {updateMessage && updateMessage}
                 {showForm &&
                     <Fragment>
                         <div onClick={handleCancelForm} className="overlay" />
@@ -113,7 +143,18 @@ const ManagersAdmin = () => {
                 {showDeleteConfirmation &&
                     <>
                         <div onClick={handleCancelForm} className="overlay" />
-                        <DeleteConfirmation onCancel={handleCancelForm}/>
+                        <DeleteConfirmation
+                            onCancel={handleCancelForm}
+                            onDelete={() => {
+                                handleDelete(managerToDelete);
+                                setUpdateMessage(
+                                    <p style={{color: "red", paddingLeft: "20px", paddingTop: "10px"}}>
+                                        Manager deleted successfully!
+                                    </p>
+                                );
+                                setShowDeleteConfirmation(false);
+                            }}
+                        />
                     </>
                 }
                 <InfosTable
@@ -122,6 +163,7 @@ const ManagersAdmin = () => {
                     columnMappings={columnMappings}
                     data={managerData}
                     actionRenderer={(managers) => handleAction(managers)}
+                    searchValue={searchValueState}
                 />
                 <EquipmentTableFooter
                     currentPage={currentPage}

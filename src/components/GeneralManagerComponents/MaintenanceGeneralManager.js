@@ -3,11 +3,19 @@ import EquipmentTableHeader from "../EquipmentTableHeader";
 import EquipmentTableFooter from "../EquipmentTableFooter";
 import InfosTable from "../Tables/InfosTable";
 import React, {useEffect, useState} from "react";
+import {SearchValueContext} from "../../Pages/usersPages/Admin";
+import {PDFDownloadLink} from "@react-pdf/renderer";
+import InfosTablePDF from "../InfosTablePDF";
 
 const MaintenanceGeneralManager = (props) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [equipmentData, setEquipmentData] = useState([]);
+    const [searchValueState, setSearchValueState] = useState('');
     const poorEquipmentData = equipmentData.filter((item) => item.condition === "poor");
+    const [reportTitle, setReportTitle] = useState('Print');
+    const [loading, setLoading] = useState(null);
+    const [pdfContent, setPdfContent] = useState(null);
+
     const columnMappings = {
         // "ID": "id",
         "IMG": "img",
@@ -36,6 +44,26 @@ const MaintenanceGeneralManager = (props) => {
     const headerTitle = 'Equipements that needs maintenance'
     const headerButtonName = 'Filter';
 
+    const handlePrintPDF = () => {
+        if (reportTitle === 'Cancel'){
+            setLoading(true);
+            setPdfContent(null);
+            setLoading(false);
+            setReportTitle('Print')
+        }else{
+            setLoading(true);
+            setPdfContent(
+                <InfosTablePDF
+                    columnTitles={columnTitles}
+                    data={poorEquipmentData}
+                    columnMappings={columnMappings}
+                    searchValue={searchValueState}
+                />
+            );
+            setLoading(false);
+            setReportTitle('Cancel')}
+
+    };
     // tableFooter
     const handleNextPage = () => {
         setCurrentPage(currentPage + 1);
@@ -46,18 +74,21 @@ const MaintenanceGeneralManager = (props) => {
     };
     const totalPages = Math.ceil(poorEquipmentData.length / 10);
 
-
-
-
     return(
         <>
             <Path pathName={'Maintenance'}/>
+            <SearchValueContext.Consumer>
+                {(searchValue) => {
+                    setSearchValueState(searchValue);
+                    return ;
+                }}
+            </SearchValueContext.Consumer>
             <div className="inventory-table">
                 <EquipmentTableHeader
                     title={headerTitle}
-                    buttonName={headerButtonName}
+                    /*buttonName={headerButtonName}
                     className={'filter_button'}
-                    isFilterButton={true}
+                    isFilterButton={true}*/
                 />
 
                 {poorEquipmentData.length === 0 ? <div style={{padding: '20px'}}>No equipments to be repaired</div> :
@@ -68,6 +99,7 @@ const MaintenanceGeneralManager = (props) => {
                             columnMappings={columnMappings}
                             data={poorEquipmentData}
                             isInventoryAdmin={true}
+                            searchValue={searchValueState}
                         />
                     )
                 }
@@ -79,7 +111,18 @@ const MaintenanceGeneralManager = (props) => {
                 />
             </div>
             <div className="report-button-container">
-                <div className="report-button">Print</div>
+                <div style={{cursor: 'pointer', marginRight: '10px'}} className="report-button" onClick={handlePrintPDF}>
+                    {reportTitle}
+                </div>
+                {pdfContent && (
+                    <PDFDownloadLink document={pdfContent} fileName="inventory_report.pdf">
+                        {({ loading }) => (loading ? 'Loading...'
+                                : (
+                                    <button className="add-button">Download PDF</button>
+                                )
+                        )}
+                    </PDFDownloadLink>
+                )}
             </div>
         </>
     );

@@ -26,7 +26,7 @@ const SignUp = (props) => {
                         </div>
                     </div>
                     <div className="login-form-inputfield">
-                        <AuthentificationForm showOtherSections={true}/>
+                        <AuthentificationForm />
                         <div className="login-form-action-sign-up">
                             <p>
                                 Already have an account?

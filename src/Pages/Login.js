@@ -24,7 +24,7 @@ const Login = () => {
                                 <div>Log in to your account</div>
                             </div>
                             <div className="login-form-text02">
-                                <div>Welcome back! Please enter your details.</div>
+                                <div>Welcome! Please enter your details.</div>
                             </div>
                         </div>
                         <div className="login-form-inputfield">

@@ -2,7 +2,7 @@ import {useState} from "react";
 import axios from 'axios';
 
 const ConditionForm = (props) => {
-    const CONDITION_CHOICES = [  ['new', 'New'],
+    const CONDITION_CHOICES = [  ['good', 'Good'],
         ['meduim', 'Medium'],
         ['poor', 'Poor'],
         ['in_repair', 'In Repair'],
@@ -10,15 +10,32 @@ const ConditionForm = (props) => {
         ['reserve', 'Reserved'],
     ];
     const [condition, setCondition] = useState(props.selectedEquipment.condition);
+    const [serialNumber, setSerialNumber] = useState(props.selectedEquipment.num_serie);
     const [description, setDescription] = useState(props.selectedEquipment.discription);
     const [previewImage, setPreviewImage] = useState(props.selectedEquipment.image);
+    const [message, setMessage] = useState(null);
 
+    console.log(props.selectedEquipment);
     const handleSubmit = (event) => {
         event.preventDefault();
         const updatedCondition = {
+            id: props.selectedEquipment.id,
+            created_by: props.selectedEquipment.created_by,
+            name: props.selectedEquipment.name,
+            brand: props.selectedEquipment.brand,
+            model: props.selectedEquipment.model,
+            categorie: props.selectedEquipment.categorie,
+            reference: props.selectedEquipment.reference,
+            num_serie: serialNumber,
             condition: condition,
+            facture_number: props.selectedEquipment.facture_number,
+            date_purchase: props.selectedEquipment.date_purchase,
+            Location: props.selectedEquipment.Location,
+            date_assignment: props.selectedEquipment.date_assignment,
             discription: description,
             image: event.target.image.files[0],
+            is_reserved: props.selectedEquipment.is_reserved,
+            is_requested: props.selectedEquipment.is_requested,
         }
         console.log(updatedCondition.image)
         console.log(updatedCondition)
@@ -31,7 +48,7 @@ const ConditionForm = (props) => {
             body: JSON.stringify(updatedCondition)
         })
             .then(response => {
-                console.log('hello');
+                console.log(response);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -40,6 +57,8 @@ const ConditionForm = (props) => {
             .then(text => {
                 try {
                     const data = JSON.parse(text);
+                    props.handleUpdateCondition(data.data);
+                    setMessage(<p style={{color: 'green', paddingBottom: '10px'}}>{data.message}</p>);
                     console.log(data);
                 } catch (error) {
                     console.log(text);
@@ -66,7 +85,9 @@ const ConditionForm = (props) => {
         setCondition(selectedValue);
         console.log(selectedValue)
     }
-
+    const handleSerialNumberChange = (event) => {
+        setSerialNumber(event.target.value);
+    }
     const handleDescriptionChange = (event) => {
         setDescription(event.target.value);
     }
@@ -75,7 +96,8 @@ const ConditionForm = (props) => {
         <>
             <div className="add-form">
                 <h2>Update equipment condition</h2>
-                <form onSubmit={handleSubmit}>
+                {message && message}
+                <form onSubmit={handleSubmit} onClick={() => setMessage(null)}>
                     <div className="form-container-form-infos-input-img">
                         <label htmlFor="image">
                             {previewImage ? (
@@ -118,6 +140,16 @@ const ConditionForm = (props) => {
                                 </option>
                             ))}
                         </select>
+                    </div>
+                    <div className="add-form-input">
+                        <label htmlFor="serialnumber">Serial number</label>
+                        <input
+                            type="number"
+                            id="serialnumber"
+                            className="add-form-input-input"
+                            value={serialNumber}
+                            onChange={handleSerialNumberChange}
+                        />
                     </div>
                     <div className="add-form-input">
                         <label htmlFor="description">Description</label>
