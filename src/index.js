@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 // import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
@@ -61,20 +61,45 @@ import {useCookies} from "react-cookie";
 
 const App = () => {
     const [cookies] = useCookies(['token', 'role']);
+    const [isValid, setIsValid] = useState(false);
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/connecteduser/", {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    console.log(userData);
+                    setIsValid(userData.is_active === true); // Update the isValid state based on userData.is_active value
+                } else {
+                    console.error("Failed to fetch user info:", response.statusText);
+                }
+            } catch (error) {
+                console.error("Error occurred while fetching user info:", error);
+            }
+        };
+
+        fetchUserInfo();
+    }, [cookies.token]);
 
     // Route guard for '/Admin' route
     const ProfileGuard = () => {
         console.log(cookies.token)
         console.log(cookies.role)
-        if (cookies.token && cookies.role === 'ADMIN') {
+            if (isValid && cookies.token && cookies.role === 'ADMIN') {
             return <Admin/>;
-        } else if(cookies.token && cookies.role === 'PRINCIPALMANAGER'){
+        } else if(cookies.token && cookies.role === 'PRINCIPALMANAGER' && isValid){
             return <GeneralManager/>;
-        }else if(cookies.token && cookies.role === 'ALLOCATIONMANAGER'){
+        }else if(cookies.token && cookies.role === 'ALLOCATIONMANAGER' && isValid){
             return <AllocationManager/>;
-        }else if(cookies.token && cookies.role === 'STUDENT'){
+        }else if(cookies.token && cookies.role === 'STUDENT' && isValid){
             return <Student/>;
-        }else if(cookies.token && cookies.role === 'RESEARCHER'){
+        }else if(cookies.token && cookies.role === 'RESEARCHER' && isValid){
             return <Researcher/>;
         }else {
             return <Navigate to="/Login" />;

@@ -126,9 +126,9 @@ const InventoryAdmin = () => {
             <div className="inventory-table">
                 <EquipmentTableHeader
                     title={`Equipments (${equipmentData.length})`}
-                    buttonName={headerButtonName}
+                    /*buttonName={headerButtonName}
                     className={'filter_button'}
-                    isFilterButton={true}
+                    isFilterButton={true}*/
                     forInventory={true}
                     onYearSelect={handleYearSelect}
                 />
