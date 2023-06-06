@@ -13,7 +13,7 @@ const EquipmentTableFooter = (props) => {
             </div>
             <p>Page {currentPage} of {totalPages}</p>
             <div className="buttonss">
-                <button disabled={currentPage === totalPages} onClick={handleNextPage}>
+                <button disabled={currentPage === totalPages || totalPages === 0} onClick={handleNextPage}>
                     Next
                 </button>
             </div>

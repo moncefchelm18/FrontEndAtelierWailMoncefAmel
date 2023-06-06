@@ -3,12 +3,14 @@ import EquipmentTableHeader from "../EquipmentTableHeader";
 import {Calendar, momentLocalizer} from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import StockForm from "../GeneralManagerComponents/Forms/StockForm";
-import React, {Fragment, useState} from "react";
+// import StockForm from "../GeneralManagerComponents/Forms/StockForm";
+import React, {Fragment, useEffect, useState} from "react";
 import HPCAllocationForm from "./Forms/HPCAllocationForm";
 import InfosTable from "../Tables/InfosTable";
 import EquipmentTableFooter from "../EquipmentTableFooter";
 import {SearchValueContext} from "../../Pages/usersPages/Admin";
+import axios from "axios";
+import {useCookies} from "react-cookie";
 
 
 
@@ -17,51 +19,108 @@ const HPCScheduleResearcher = (props) => {
     const [showForm, setShowForm] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchValueState, setSearchValueState] = useState('');
-    const equipmentData = [
-        {
-            id: 1,
-            equipment: "Equipment 1",
-            categorie: "computers",
-            reference: "REF-001",
-            startDate: "2023-04-15",
-            finishDate: "2023-04-16",
-            status: "Pending",
-            purpose: "Meeting",
-        },
-        {
-            id: 1,
-            equipment: "Equipment 1",
-            categorie: "computers",
-            reference: "REF-001",
-            startDate: "2023-04-15",
-            finishDate: "2023-04-16",
-            status: "Active",
-            purpose: "Meeting",
+    const [events, setEvents] = useState([]);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [connectedUserId, setConnectedUserId] = useState(null);
+    const [equipmentData, setEquipmentData] = useState([]);
+    const [cookies] = useCookies(['token']);
+    // to get connected user id so that we use it in allocate table
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/connecteduser/', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    console.log(userData);
+                    setConnectedUserId(userData.id);
+                    console.log(userData.id)
+                    // setLastName(userData.lastname);
+                } else {
+                    console.error('Failed to fetch user info:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error occurred while fetching user info:', error);
+            }
+        };
+
+        fetchUserInfo();
+    }, [cookies.token]);
+    useEffect(() => {
+        if (connectedUserId) {
+            fetch('http://127.0.0.1:8000/allocatehpc/', {
+                headers: {
+                    'Authorization': `Token ${cookies.token}`
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    const allocations = data.filter(allocation =>  allocation.Reserved_by === connectedUserId);
+                    console.log(allocations)
+                    const updatedAllocations = allocations.map(allocation => ({
+                        ...allocation,
+                        status: isAllocationActive(allocation) ? "Active" : "Disable"
+                    }));
+                    setEquipmentData(updatedAllocations)
+                });
         }
-    ];
+    }, [connectedUserId, cookies.token, /*pendingAllocationData*/]);
+
 
     const columnMappings = {
-        "Equipment": "equipment",
-        "Categorie": "categorie",
+        "Name": "reference_details.name",
+        "Brand": "reference_details.brand",
+        "Model": "reference_details.model",
         "Reference": "reference",
-        "Start Date": "startDate",
-        "Finish Date": "finishDate",
-        "Status" : "status",
-        "Purpose": "purpose"
+        "Start-Date": "start_date",
+        "Finish-Date": "finish_time",
+        "Status": "status",
+        "Purpose": "purpose",
     };
     const columnTitles = Object.keys(columnMappings);
-    const events = [
-        {
-            title: 'John Doe - HPC Reservation',
-            start: new Date(2023, 3, 19, 10, 0),
-            end: new Date(2023, 3, 19, 12, 0),
-        },
-        {
-            title: 'Jane Smith - HPC Reservation',
-            start: new Date(2023, 3, 18, 14, 0),
-            end: new Date(2023, 3, 18, 16, 0),
-        },
-    ];
+    const isAllocationActive = (allocation) => {
+        const currentDate = new Date();
+        const startDate = new Date(allocation.start_date);
+        const finishDate = new Date(allocation.finish_time);
+        return currentDate >= startDate && currentDate <= finishDate;
+    };
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/allocatehpc/');
+                const data = response.data;
+
+                const formattedEvents = data.map((event) => {
+                    const title = `Reserved by: ${event.Reserved_by}\nHPC Reference: ${event.reference}\nHPC Details: ${event.reference_details.name} (${event.reference_details.brand} ${event.reference_details.model})`;
+
+                    return {
+                        id: event.id,
+                        title: title,
+                        start: new Date(event.start_date),
+                        end: new Date(event.finish_time),
+                        extendedProps: {
+                            reference: event.reference,
+                            referenceDetails: event.reference_details,
+                            purpose: event.purpose,
+                            message: event.Message,
+                        },
+                    };
+                });
+
+                setEvents(formattedEvents);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        };
+
+        fetchEvents();
+    }, []);
 
     const handleAction = () => {
         return (
@@ -82,6 +141,10 @@ const HPCScheduleResearcher = (props) => {
     const handleCancelForm = () =>{
         setShowForm(false);
     }
+
+    const handleActionHPC = (event) => {
+        setSelectedEvent(event);
+    };
     return(
         <>
             <Path pathName={'HPC Schedule'}/>
@@ -94,10 +157,10 @@ const HPCScheduleResearcher = (props) => {
             <div className="inventory-table">
                 <EquipmentTableHeader
                     title={'My HPC allocation'}
-                    buttonName={'filter'}
-                    isFilterButton={true}
-                    className={'filter_button'}
-                    onClick={handleAddClick}
+                    // buttonName={'filter'}
+                    // isFilterButton={true}
+                    // className={'filter_button'}
+                    // onClick={handleAddClick}
                 />
                 <InfosTable
                     columnTitles={columnTitles}
@@ -106,6 +169,7 @@ const HPCScheduleResearcher = (props) => {
                     currentPage={currentPage}
                     actionRenderer={handleAction}
                     searchValue={searchValueState}
+                    isInventoryAdmin={true}
                 />
                 <EquipmentTableFooter/>
 
@@ -129,7 +193,20 @@ const HPCScheduleResearcher = (props) => {
                     startAccessor="start"
                     endAccessor="end"
                     className="calendar"
+                    onSelectEvent={handleActionHPC}
                 />
+                {selectedEvent && (
+                    <>
+                        <div className="overlay" onClick={() => setSelectedEvent(null)} />
+                        <div className="add-form ">
+                            <h2>Event Details</h2>
+                            <p>{selectedEvent.title}</p>
+                            <p>Start Date: {selectedEvent.start.toString()}</p>
+                            <p>End Date: {selectedEvent.end.toString()}</p>
+                            {/* Add more event details as needed */}
+                        </div>
+                    </>
+                )}
             </div>
         </>
     )

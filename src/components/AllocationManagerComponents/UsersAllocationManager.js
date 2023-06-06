@@ -7,6 +7,7 @@ import InfosTable from "../Tables/InfosTable";
 import {useCookies} from "react-cookie";
 import {SearchValueContext} from "../../Pages/usersPages/Admin";
 import DeleteConfirmation from "../AdminComponents/Forms/DeleteConfirmation";
+import ManagersForm from "../AdminComponents/Forms/ManagersForm";
 
 const UsersAllocationManager = (props) => {
     const [showForm, setShowForm] = useState(false);
@@ -20,7 +21,7 @@ const UsersAllocationManager = (props) => {
 
     const columnMappings = {
         "ID": "id",
-        "IMG": "img",
+        "IMG": "image",
         "Firstname":"name",
         "Lastname":"lastname",
         "Email":"email",
@@ -94,8 +95,12 @@ const UsersAllocationManager = (props) => {
             });
     }
 
+    const handleAddClick = () => {
+        setShowForm(true); // show form when Add button is clicked
+    }
     const handleCancelForm = () =>{
         setShowDeleteConfirmation(false);
+        setShowForm(false)
     }
     // for-bottom-table-handle-pages
     const handleNextPage = () => {
@@ -117,13 +122,11 @@ const UsersAllocationManager = (props) => {
             <div className="inventory-table">
                 <EquipmentTableHeader
                     title={'List of users'}
-                    buttonName={'Filter'}
                     // buttonName2={'Add user'}
-                    className={'filter_button'}
-                    // className3={'add-button'}
-                    // isAddButton={true}
-                    isFilterButton={true}
-                    // onClicks={handleAddClick}
+                    className3={'add-button'}
+                    buttonName2={'Add user'}
+                    isAddButton={true}
+                    onClicks={handleAddClick}
                 />
                 {showForm &&
                     <Fragment>

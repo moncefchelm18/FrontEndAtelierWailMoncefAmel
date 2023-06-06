@@ -8,6 +8,8 @@ import {Bar, Doughnut} from "react-chartjs-2";
 import {Chart as ChartJS } from "chart.js/auto"
 import DoughnutEquipmentsCondition from "../DashboardComponents/DoughnutEquipmentsCondition";
 import BarEquipmentsAffectation from "../DashboardComponents/BarEquipmentsAffectation";
+import axiosInstance from "../../axiosConfig";
+
 
 
 
@@ -55,24 +57,7 @@ const DashboardAdmin = () => {
         })
 
 
-    const equipmentData = {
-        labels: ['Good', 'Medium', 'Poor', 'Reserved', 'Stolen'],
-        datasets: [
-            {
-                data: [20, 10, 5, 8, 2], // Sample data for each condition type
-                backgroundColor: ['#4CAF50', '#FFC107', '#F44336', '#9E9E9E', '#607D8B'],
-            },
-        ],
-    };
 
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        legend: {
-            position: 'right',
-            align: 'start',
-        },
-    };
 
 
     return (

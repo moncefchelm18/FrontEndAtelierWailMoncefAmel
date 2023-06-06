@@ -18,7 +18,7 @@ const MaintenanceGeneralManager = (props) => {
 
     const columnMappings = {
         // "ID": "id",
-        "IMG": "img",
+        "IMG": "image",
         "Name": "name",
         "Reference": "reference",
         "Categories": "categorie",

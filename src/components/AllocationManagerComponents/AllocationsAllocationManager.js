@@ -8,6 +8,7 @@ import EquipmentTableHeader from "../EquipmentTableHeader";
 import {SearchValueContext} from "../../Pages/usersPages/Admin";
 import axios from "axios";
 import {useCookies} from "react-cookie";
+import moment from "moment";
 
 
 const AllocationsHeader = (props) => {
@@ -24,6 +25,8 @@ const AllocationsAllocationManager = (props) => {
     const [hideCurrentAllocationsTable, setHideCurrentAllocationsTable] = useState(true);
     const [activeEquipmentData, setActiveEquipmentData] = useState([]);
     const [pendingEquipmentData, setPendingEquipmentData] = useState([]);
+    const [message, setMessage] = useState([]);
+    const [returnMessage, setReturnMessage] = useState([]);
     const [cookies] = useCookies(['token']);
 
     const columnMappings = {
@@ -135,6 +138,16 @@ const AllocationsAllocationManager = (props) => {
             .post('http://127.0.0.1:8000/acceptrequest/', data, config)
             .then((response) => {
                 console.log('Success:', response.data);
+                const updatedPendingEquipmentData = pendingEquipmentData.filter(
+                    (item) => item.id !== allocation.id
+                );
+                const updatedActiveEquipmentData = [
+                    ...activeEquipmentData,
+                    allocation
+                ];
+                setPendingEquipmentData(updatedPendingEquipmentData);
+                setActiveEquipmentData(updatedActiveEquipmentData);
+                setMessage(<p style={{color: 'green', paddingLeft: '20px'}}>Accept {response.data.message}</p>)
             })
             .catch((error) => {
                 console.log('Error:', error.response);
@@ -157,6 +170,64 @@ const AllocationsAllocationManager = (props) => {
             .post('http://127.0.0.1:8000/acceptrequest/', data, config)
             .then((response) => {
                 console.log('Success:', response.data);
+                const updatedPendingEquipmentData = pendingEquipmentData.filter(
+                    (item) => item.id !== allocation.id
+                );
+                setPendingEquipmentData(updatedPendingEquipmentData);
+                setMessage(<p style={{color: 'green', paddingLeft: '20px'}}>Refuse {response.data.message}</p>)
+            })
+            .catch((error) => {
+                console.log('Error:', error.response);
+            });
+    };
+    const handleSecondAction = (allocation) => {
+        console.log(allocation)
+        const currentDate = new Date().toISOString().split('T')[0];
+        const finishDate = allocation.finish_date;
+        const isButtonDisabled = currentDate < finishDate;
+
+        return(
+            <>
+                <button
+                    className={`equipment-table-button ${isButtonDisabled ? 'disabled' : ''}`}
+                    disabled={isButtonDisabled}
+                    onClick={() => handleReturnEquipment(allocation)}
+                >
+                    Return
+                </button>
+                {/*<button
+                    className={`equipment-table-button ${isButtonDisabled ? 'disabled' : ''}`}
+                    disabled={isButtonDisabled}
+                >
+                    Email
+                </button>*/}
+            </>
+
+        )
+    }
+    const handleReturnEquipment = (allocation) => {
+        console.log(allocation)
+        const data = {
+            reference: allocation.reference,
+        }
+        const config = {
+            headers: {
+                Authorization: `Token ${cookies.token}`
+            }
+        };
+        axios.post('http://127.0.0.1:8000/return/', data, config)
+            .then((response) => {
+                console.log(response)
+                console.log(response.data)
+                setReturnMessage(<p style={{color: 'green', paddingLeft: '20px'}}>{response.data.message}</p>)
+        })
+            .catch((error) => {
+                console.log('Error:', error.response);
+            });
+        axios.delete(`http://127.0.0.1:8000/allocate/${allocation.id}`, config)
+            .then((response) => {
+                console.log(response.data.message);
+                setActiveEquipmentData(prevData => prevData.filter(item => item.id !== allocation.id));
             })
             .catch((error) => {
                 console.log('Error:', error.response);
@@ -171,6 +242,34 @@ const AllocationsAllocationManager = (props) => {
     const handleCurrentAllocationsHeaderClick = () => {
         setHideCurrentAllocationsTable(!hideCurrentAllocationsTable);
     };
+    // tableFooter
+    const handleNextPage = () => {
+        setCurrentPage(currentPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage(currentPage - 1);
+    };
+    let ActiveTableFooter;
+    let PendingTableFooter
+    if (activeEquipmentData){
+        const totalPages = Math.ceil(activeEquipmentData.length / 10);
+        ActiveTableFooter = <EquipmentTableFooter
+            currentPage={currentPage}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            totalPages={totalPages}
+        />
+    }
+    if(pendingEquipmentData){
+        const totalPages = Math.ceil(pendingEquipmentData.length / 10);
+        PendingTableFooter = <EquipmentTableFooter
+            currentPage={currentPage}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            totalPages={totalPages}
+        />
+    }
 
     return (
         <>
@@ -195,8 +294,9 @@ const AllocationsAllocationManager = (props) => {
                 {` ( ${pendingEquipmentData.length} )`}
             </AllocationsHeader>
             {showAllocationsTable &&
-                <div className="inventory-table">
+                <div className="inventory-table" >
                     <EquipmentTableHeader title={'New allocations list'}/>
+                    {message && message}
                     <InfosTable
                         columnTitles={columnTitles}
                         columnMappings={columnMappings}
@@ -205,7 +305,7 @@ const AllocationsAllocationManager = (props) => {
                         actionRenderer={(allocation) => handleAction(allocation)}
                         searchValue={searchValueState}
                     />
-                    <EquipmentTableFooter/>
+                    {PendingTableFooter}
                 </div>}
 
             <AllocationsHeader onClick={handleCurrentAllocationsHeaderClick}>
@@ -226,15 +326,16 @@ const AllocationsAllocationManager = (props) => {
             {hideCurrentAllocationsTable &&
             <div className="inventory-table">
                 <EquipmentTableHeader title={'Current allocations list'}/>
+                {returnMessage && returnMessage}
                 <InfosTable
                     columnTitles={columnTitles}
                     columnMappings={columnMappings}
                     data={activeEquipmentData}
                     currentPage={currentPage}
-                    isInventoryAdmin={true}
+                    actionRenderer={(allocation) => handleSecondAction(allocation)}
                     searchValue={searchValueState}
                 />
-                <EquipmentTableFooter/>
+                {ActiveTableFooter}
             </div>}
 
         </>

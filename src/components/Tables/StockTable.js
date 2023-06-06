@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React/*, { useState, useEffect }*/ from "react";
+// import axios from "axios";
 import '../CSS/equipmentTable.css';
-import EquipmentTableFooter from '../EquipmentTableFooter';
+// import EquipmentTableFooter from '../EquipmentTableFooter';
 
 const StockTable = (props) => {
     const {equipmentData, columnTitles, columnMappings, currentPage} = props;

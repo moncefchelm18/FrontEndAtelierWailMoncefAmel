@@ -137,7 +137,11 @@ const ItRoomContent = (props) => {
                 {showForm &&
                     <>
                         <div onClick={handleCancelForm} className="overlay" />
-                        <AssignementForm location={id} handleCancelForm={handleCancelForm}/>
+                        <AssignementForm
+                            location={id}
+                            handleCancelForm={handleCancelForm}
+                            onAssignedEquipmentChange={(data) => setAssignedEquipment(data)}
+                        />
                     </>
                 }
                 {filteredInventoryData.length === 0 ? <p style={{padding:'10px 20px'}}>No items avaliable in this location </p>

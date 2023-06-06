@@ -73,7 +73,7 @@ const Allocations = () => {
                 const avaliableEquipment = data.filter(item => !item.is_requested);
                 setEquipmentData(avaliableEquipment);
             });
-    }, []);
+    }, [pendingAllocationData]);
 
     useEffect(() => {
         if (connectedUserId) {
@@ -103,12 +103,12 @@ const Allocations = () => {
                     setPendingAllocationData(pendingAllocations);
                 });
         }
-    }, [connectedUserId, cookies.token, pendingAllocationData]);
+    }, [connectedUserId, cookies.token, /*pendingAllocationData*/]);
 
 
     // for columns and titles
     const columnMappings = {
-        "IMG": "img",
+        "IMG": "image",
         "Name": "name",
         "Reference": "reference",
         "Categories": "categorie",
@@ -161,6 +161,29 @@ const Allocations = () => {
     const handleCancelForm = () => {
         setAllocationForm(false)
     }
+    const handleUpdatedAllocation = (data) => {
+        setPendingAllocationData((prevState) => [...prevState, data]);
+    }
+    // tableFooter
+    const handleNextPage = () => {
+        setCurrentPage(currentPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        setCurrentPage(currentPage - 1);
+    };
+    let EquipmentDataFooter;
+    let PendingTableFooter;
+    let ActiveTableFooter;
+    if (equipmentData){
+        const totalPages = Math.ceil(equipmentData.length / 10);
+        EquipmentDataFooter = <EquipmentTableFooter
+            currentPage={currentPage}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            totalPages={totalPages}
+        />
+    }
     return (
         <>
             <Path pathName={'Allocations'}/>
@@ -193,10 +216,13 @@ const Allocations = () => {
                             <AllocationForm
                                 handleCancelForm={handleCancelForm}
                                 reference={reference}
+                                handleUpdatedAllocation={(data) => handleUpdatedAllocation(data)}
+                                pendingAllocationLength={pendingAllocationData.length}
+                                activeAllocationLength={activeAllocationData.length}
                             />
                         </>
                     }
-                    <EquipmentTableFooter/>
+                    {EquipmentDataFooter}
                 </div>
             }
             <EquipmentsHeader

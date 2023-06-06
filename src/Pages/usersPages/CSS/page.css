@@ -72,3 +72,45 @@
     z-index: 11;
 
 }
+.notification {
+    position: absolute;
+    top: 4.5rem;
+    right: 4rem;
+    /*transform: translate(50%, -50%);*/
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: white;
+    padding: 3.5px 3.0px 3px;
+    border-radius: 10px;
+    width: auto;
+    height: auto;
+    max-width: 80%;
+    max-height: 80%;
+    /*overflow: auto;*/
+    gap: 20px;
+}
+.notification::before {
+    content: '';
+    /*z-index: 12;*/
+    position: absolute;
+    top: -0.9rem;
+    right: 2.3rem;
+    width: 30px;
+    height: 30px;
+    transform: rotate(45deg);
+    background-color: white;
+}
+.notification-count{
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}

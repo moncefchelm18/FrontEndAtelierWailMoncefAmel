@@ -37,6 +37,7 @@ const StockForm = (props) => {
             formData.append('discription', description);
             formData.append('image', event.target.image.files[0] || '');
 
+            console.log(event.target.image.files[0])
             fetch('http://127.0.0.1:8000/stock/', {
                 method: 'POST',
                 body: formData,

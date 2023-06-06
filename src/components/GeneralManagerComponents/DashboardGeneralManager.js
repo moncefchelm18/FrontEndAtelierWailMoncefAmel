@@ -101,7 +101,7 @@ const DashboardGeneralManager = () => {
                     </div>
                 </div>
                 <div className="dashboard-equipment-container-2">
-                    <h2>Equipments affectation</h2>
+                    <h2>Users allocations</h2>
                     <div className="dashboard-equipment-charts">
                         <PieChartStudentsResearchers/>
                     </div>

@@ -11,7 +11,7 @@ const EquipmentAllocationManager = (props) => {
     const [searchValueState, setSearchValueState] = useState('');
     const headerTitle= 'Avaliable equipment list';
     const headerButtonName = 'Filter';
-
+    console.log(searchValueState);
     useEffect(() => {
         fetch('http://127.0.0.1:8000/allocation/')
             .then(response => response.json())
@@ -23,7 +23,7 @@ const EquipmentAllocationManager = (props) => {
 
     const columnMappings = {
         // "ID": "id",
-        "IMG": "img",
+        "IMG": "image",
         "Name": "name",
         "Reference": "reference",
         "Categories": "categorie",
@@ -53,6 +53,8 @@ const EquipmentAllocationManager = (props) => {
         setCurrentPage(currentPage - 1);
     };
     const totalPages = Math.ceil(equipmentData.length / 10);
+
+    console.log(equipmentData)
     return(
         <>
             <Path pathName={'Equipments'}/>

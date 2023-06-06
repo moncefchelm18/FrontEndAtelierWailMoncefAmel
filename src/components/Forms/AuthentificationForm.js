@@ -211,6 +211,7 @@ const AuthentificationForm = (props) => {
                     className="login-form-inputfield-input"
                     required
                     value={phone}
+                    min={0}
                     onChange={handlePhoneDigits}
                 />
             </div>
@@ -226,6 +227,7 @@ const AuthentificationForm = (props) => {
                     required
                     minLength={18}
                     maxLength={18}
+                    min={0}
                     pattern="[0-9]{18}"
                     onChange={handleNationalIdChange}
                 />

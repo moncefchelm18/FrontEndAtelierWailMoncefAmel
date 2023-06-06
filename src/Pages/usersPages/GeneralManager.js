@@ -11,7 +11,7 @@ const GeneralManager = (props) => {
         <div className="app-container">
             <VerticalMenu displayGeneralManagerMenu={true} />
             <div className="main-container">
-                <Header searchValue={(value) => setSearchValue(value)}/>
+                <Header notificationMessages={[]} searchValue={(value) => setSearchValue(value)}/>
                 <div className="content">
                     <SearchValueContext.Provider value={searchValue}>
                         <Outlet/>

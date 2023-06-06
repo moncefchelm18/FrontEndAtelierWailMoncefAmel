@@ -115,11 +115,11 @@
 }
 
 .equipment-table-header {
-    padding: 1rem 1rem;
+    padding: 0.5rem 0.3rem;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 500;
-    font-size: 18px;
+    font-size: 15px;
     line-height: 20px;
     color: #000000;
     white-space: nowrap;
@@ -131,10 +131,10 @@
 
 
 .equipment-table-cell {
-    padding: 1rem 1rem;
-
+    padding: 0.5rem 0.3rem;
     white-space: nowrap;
     border-bottom: 0.5px solid #D0D3D9;
+    font-size: 13px;
 }
 .equipment-table-cell.new {
     color: #144414;
@@ -194,11 +194,22 @@
     transition: background-color 0.3s ease;
 }
 
+.equipment-table-button.disabled {
+    background-color: #D3D3D3;
+    cursor: not-allowed;
+}
+.equipment-table-button.disabled:hover {
+    background-color: #D3D3D3;
+    cursor: not-allowed;
+}
+
 .equipment-table-button:hover {
     background-color: #1BB5F5;
     cursor: pointer;
 }
-
+.action-button{
+    position: relative;
+}
 /*actions button*/
 .action-button:hover{
     transform: scale(1.1);

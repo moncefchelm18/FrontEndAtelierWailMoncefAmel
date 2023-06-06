@@ -32,10 +32,10 @@ const InventoryAdmin = () => {
         "Brand": "brand",
         "Model": "model",
         "Condition": "condition",
+        "Location": "Location",
         "Reserved": "is_reserved",
         "Serial N*": "num_serie",
         "Facture N*": "facture_number",
-        "Location": "Location",
         "Assignment-Date": "date_assignment",
         "Description": "discription",
     };

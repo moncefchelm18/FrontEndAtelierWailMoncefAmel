@@ -22,40 +22,41 @@ const AllocationForm = (props) => {
         };// Check if start date and finish date are valid
         const selectedStartDate = new Date(startDate);
         const selectedFinishDate = new Date(finishDate);
-
-        if (!selectedStartDate || !selectedFinishDate || !purpose){
+        if (props.pendingAllocationLength >= 2  ) {
+            setMessage(<p style={{ color: "red" }}>You have limitation of allocations</p>);
+        }else if (!selectedStartDate || !selectedFinishDate || !purpose){
             setMessage(<p style={{ color: "red" }}>Please fill specified columns.</p>)
-        }
-        if (selectedStartDate > selectedFinishDate || selectedFinishDate - selectedStartDate > 31 * 24 * 60 * 60 * 1000) {
-            setMessage(<p style={{ color: "red" }}>The selected dates are invalid. Please ensure the duration does not exceed 31 days.</p>);
+        }else if (selectedStartDate > selectedFinishDate || selectedFinishDate - selectedStartDate > 31 * 24 * 60 * 60 * 1000) {
+            setMessage(<p style={{ color: "red" }}>Selected dates are invalid. Duration should not pass 31 days.</p>);
             return;
-        }
+        }else {
+            console.log(data)
+            try {
+                const response = await axios.post("http://127.0.0.1:8000/allocate/", data, {
+                    headers: {
+                        'Authorization': `Token ${cookies.token}`
+                    }
+                });
 
-        console.log(data)
+                // Handle the response as needed
+                console.log(response.data);
+                props.handleUpdatedAllocation(response.data['new_request_allocation']);
 
-        try {
-            const response = await axios.post("http://127.0.0.1:8000/allocate/", data, {
-                headers: {
-                    'Authorization': `Token ${cookies.token}`
+                // Clear form inputs
+                setStartDate("");
+                setFinishDate("");
+                setPurpose("");
+                setMessage(<p style={{ color: "green" }}>Allocation request submitted successfully. Wait approval Manager.</p>);
+            } catch (error) {
+                // Handle errors
+                if (error.response && error.response.data && error.response.data.message) {
+                    setMessage(<p style={{ color: "red" }}>{error.response.data.message}</p>);
+                } else {
+                    console.error(error);
                 }
-            });
-
-            // Handle the response as needed
-            console.log(response.data);
-
-            // Clear form inputs
-            setStartDate("");
-            setFinishDate("");
-            setPurpose("");
-            setMessage(<p style={{ color: "green" }}>The allocation request has been successfully submitted. Please await approval from the manager.</p>);
-        } catch (error) {
-            // Handle errors
-            if (error.response && error.response.data && error.response.data.message) {
-                setMessage(<p style={{ color: "red" }}>{error.response.data.message}</p>);
-            } else {
-                console.error(error);
             }
         }
+
     };
 
     return (

@@ -72,7 +72,9 @@ const PieChartStudentsResearchers = () => {
             {isLoading ? (
                 <p>Loading...</p>
             ) : (
-                <Pie data={getAllocationPercentage()} options={pieOptions} />
+                <div style={{ width: "300px", height: "300px" }}>
+                    <Pie data={getAllocationPercentage()} options={pieOptions} />
+                </div>
             )}
         </>
     );
