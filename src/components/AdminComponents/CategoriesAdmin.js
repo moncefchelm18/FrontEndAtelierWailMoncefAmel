@@ -12,6 +12,7 @@ import DeleteConfirmation from "./Forms/DeleteConfirmation";
 import Loading from "../Loading";
 import {useCookies} from "react-cookie";
 import {SearchValueContext} from "../../Pages/usersPages/Admin";
+import axios from "../../axios";
 
 const CategoriesAdmin = () => {
     // const title = 'Equipments categories';
@@ -38,14 +39,14 @@ const CategoriesAdmin = () => {
         const fetchCategories = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://127.0.0.1:8000/categories/', {
+                const response = await axios.get('/categories/', {
                     headers: {
                         Authorization: `Token ${cookies.token}`
                     }
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
+                if (response.status === 200) {
+                    const data = response.data;
                     setCategories(data);
                 } else {
                     // Handle error response
@@ -117,18 +118,16 @@ const CategoriesAdmin = () => {
                 created_on: props.category.created_on,
             };
 
-            setLoading(true)
-            fetch(`http://127.0.0.1:8000/categories/${props.category.id}/`, {
-                method: 'PUT',
+            setLoading(true);
+            axios.put(`/categories/${props.category.id}/`, updatedCategory, {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Token ${cookies.token}`
+                    Authorization: `Token ${cookies.token}`,
                 },
-                body: JSON.stringify(updatedCategory)
             })
-                .then((response) => response.json())
+                .then((response) => response.data)
                 .then((data) => {
-                    setCategories(categories.map((category) => {
+                    setCategories((categories) => categories.map((category) => {
                         if (category.id === props.category.id) {
                             return data.data;
                         }
@@ -144,8 +143,10 @@ const CategoriesAdmin = () => {
                 .finally(() => {
                     setLoading(false);
                 });
+
             console.log(updatedCategory);
         };
+
         const handleCancel = () => {
             setShowUpdatingForm(false);
             setUpdateMessage(null);
@@ -202,17 +203,18 @@ const CategoriesAdmin = () => {
     // delete categories button action
     const handleDelete = (id) => {
         setLoading(true);
-        fetch(`http://127.0.0.1:8000/categories/${id}/`, {
-            method: 'DELETE',
+        axios.delete(`/categories/${id}/`, {
             headers: {
                 Authorization: `Token ${cookies.token}`
             }
         })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to delete category');
-                }
+                /*// if (!response.ok) {
+                //     throw new Error('Failed to delete category');
+                // }*/
+                console.log('hii')
                 setCategories(categories.filter(category => category.id !== id));
+                setUpdateMessage(<p style={{color: 'red'}}>Deleted successfully!</p>)
             })
             .catch(error => console.error(error))
             .finally(() => setLoading(false));

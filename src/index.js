@@ -91,7 +91,7 @@ const App = () => {
     const ProfileGuard = () => {
         console.log(cookies.token)
         console.log(cookies.role)
-            if (isValid && cookies.token && cookies.role === 'ADMIN') {
+            if (/*isValid &&*/ cookies.token && cookies.role === 'ADMIN') {
             return <Admin/>;
         } else if(cookies.token && cookies.role === 'PRINCIPALMANAGER' && isValid){
             return <GeneralManager/>;

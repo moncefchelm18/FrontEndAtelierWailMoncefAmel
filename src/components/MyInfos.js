@@ -13,6 +13,8 @@ const MyInfos = (props) => {
     const [address, setAddress] = useState("");
     const [role, setRole] = useState("");
     const [previewImage, setPreviewImage] = useState(null);
+    const [message, setMessage] = useState(null);
+
     const [cookies] = useCookies(["token"]);
 
     const handleImageChange = (event) => {
@@ -59,7 +61,11 @@ const MyInfos = (props) => {
         event.preventDefault();
 
         const updatedData = new FormData();
-        updatedData.append("image", event.target.image.files[0]);
+
+        if (event.target.image.files.length > 0) {
+            updatedData.append("image", event.target.image.files[0]);
+        }
+
         updatedData.append("password", password);
         updatedData.append("name", firstName);
         updatedData.append("lastname", lastName);
@@ -68,6 +74,7 @@ const MyInfos = (props) => {
         updatedData.append("national_card_number", nationalId);
         updatedData.append("address", address);
         updatedData.append("role", role);
+        updatedData.append("is_active", true);
 
         try {
             const response = await axios.put(
@@ -79,7 +86,7 @@ const MyInfos = (props) => {
                     },
                 }
             );
-            // setMessage
+            setMessage(<p style={{color: 'green'}}>Updated successfully!</p>);
             console.log(response);
         } catch (error) {
             alert(error.toString());
@@ -90,7 +97,8 @@ const MyInfos = (props) => {
     return (
         <>
             <div className="form-container">
-                <div className="form-container-form">
+                <div className="form-container-form" onClick={() => setMessage(null)}>
+                    {message && message}
                     <h2>Manage my infos</h2>
                     <div className="form-container-form-infos">
                         <form onSubmit={handleSubmit}>

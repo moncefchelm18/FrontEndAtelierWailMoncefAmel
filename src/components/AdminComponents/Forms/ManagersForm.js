@@ -1,6 +1,7 @@
 import {useRef, useState} from "react";
 import '../CSS/myAccount.css';
 import {useCookies} from "react-cookie";
+import axios from "axios";
 
 const ManagersForm = (props) => {
     const [firstName, setFirstName] = useState('');
@@ -20,12 +21,12 @@ const ManagersForm = (props) => {
 
         formRef.current.scrollIntoView({ behavior: 'smooth' });
         if (!password || !firstName || !lastName || !email || !phone || !nationalId || !address) {
-            setMessage(<p style={{color: 'red', padding:'10px 0px'}}>Please fill all the fields!</p>)
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Please fill all the fields!</p>);
             return;
         }
         const phoneRegex = /^(05|06|07)\d{8}$/;
         if (!phoneRegex.test(phone)) {
-            setMessage(<p style={{color: 'red', padding:'10px 0px'}}>Phone number must start with '05', '06', or '07' and have 10 digits.</p>)
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Phone number must start with '05', '06', or '07' and have 10 digits.</p>);
             return;
         }
 
@@ -36,33 +37,31 @@ const ManagersForm = (props) => {
             url = "http://127.0.0.1:8000/profiles/Allocationmanager/";
         }
 
-        const data = {
-            password: password,
-            name: firstName,
-            lastname: lastName,
-            email: email,
-            phonenumber: phone,
-            national_card_number: nationalId,
-            address: address
-        };
+        const data = new FormData();
+        data.append("password", password);
+        data.append("name", firstName);
+        data.append("lastname", lastName);
+        data.append("email", email);
+        data.append("phonenumber", phone);
+        data.append("national_card_number", nationalId);
+        data.append("address", address);
+        data.append("image", event.target.image.files[0] || null);
         console.log(url);
-        console.log(data)
-        fetch(url, {
-            method: 'POST',
+        console.log(data);
+
+        axios.post(url, data, {
             headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
+                "Content-Type": "multipart/form-data",
+                Authorization: `Token ${cookies.token}`, // Assuming you have access to cookies containing the token
             },
-            body: JSON.stringify(data),
         })
             .then(response => {
-                console.log(response)
-                if (response.ok) {
+                console.log(response);
+                if (response.status === 200) {
                     // Manager added successfully
                     // Perform any additional actions or update state as needed
                     console.log('Manager added successfully');
-                }
-                else {
+                } else {
                     // Error occurred during manager addition
                     console.error('Error adding manager:', response.statusText);
                 }
@@ -77,7 +76,7 @@ const ManagersForm = (props) => {
         const imageFile = event.target.files[0];
         const imageUrl = URL.createObjectURL(imageFile);
         setPreviewImage(imageUrl);
-    }
+    };
     const handleFirstNameChange = (event) => {
         setFirstName(event.target.value);
     };

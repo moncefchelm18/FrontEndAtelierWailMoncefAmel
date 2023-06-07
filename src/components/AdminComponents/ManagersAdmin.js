@@ -23,7 +23,7 @@ const ManagersAdmin = () => {
 
     const columnMappings = {
         "ID": "id",
-        // "IMG": "img",
+        "IMG": "image",
         "Firstname":"name",
         "Lastname":"lastname",
         "Email":"email",

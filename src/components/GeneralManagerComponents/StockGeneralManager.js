@@ -10,6 +10,8 @@ import axios from "axios";
 import StockHistoriqueForm from "./Forms/StockHistoriqueForm";
 import {SearchValueContext} from "../../Pages/usersPages/Admin";
 import Loading from "../Loading";
+import InfosTablePDF from "../InfosTablePDF";
+import {PDFDownloadLink} from "@react-pdf/renderer";
 
 const StockGeneralManager = (props) => {
     const headerTitle = 'New equipments'
@@ -24,6 +26,8 @@ const StockGeneralManager = (props) => {
     const [showUpdatingForm, setShowUpdatingForm] = useState(null)
     const [selectedEquipment, setSelectedEquipment] = useState(null);
     const [updateMessage, setUpdateMessage] = useState(null);
+    const [reportTitle, setReportTitle] = useState('Print');
+    const [pdfContent, setPdfContent] = useState(null);
 
 
     const columnMappings = {
@@ -269,6 +273,26 @@ const StockGeneralManager = (props) => {
         setShowUpdatingForm(false);
         setShowHistorique(false);
     }
+    const handlePrintPDF = () => {
+        if (reportTitle === 'Cancel'){
+            setLoading(true);
+            setPdfContent(null);
+            setLoading(false);
+            setReportTitle('Print')
+        }else{
+            setLoading(true);
+            setPdfContent(
+                <InfosTablePDF
+                    columnTitles={columnTitles}
+                    data={equipmentData}
+                    columnMappings={columnMappings}
+                    searchValue={searchValueState}
+                />
+            );
+            setLoading(false);
+            setReportTitle('Cancel')}
+
+    };
 
     // footerTable
     const totalPages = Math.ceil(equipmentData.length / 10);
@@ -336,14 +360,21 @@ const StockGeneralManager = (props) => {
                             handlePrevPage={handlePrevPage}
                             totalPages={totalPages}
                         />
-                        {/*<EquipmentTableFooter
-                    currentPage={currentPage}
-                    handleNextPage={handleNextPage}
-                    handlePrevPage={handlePrevPage}
-                    totalPages={totalPages}
-                />*/}
                     </div>
-
+                    <div className="report-button-container">
+                        <div style={{cursor: 'pointer', marginRight: '10px'}} className="report-button" onClick={handlePrintPDF}>
+                            {reportTitle}
+                        </div>
+                        {pdfContent && (
+                            <PDFDownloadLink document={pdfContent} fileName="inventory_report.pdf">
+                                {({ loading }) => (loading ? 'Loading...'
+                                        : (
+                                            <button className="add-button">Download PDF</button>
+                                        )
+                                )}
+                            </PDFDownloadLink>
+                        )}
+                    </div>
                 </>
             )}
         </>

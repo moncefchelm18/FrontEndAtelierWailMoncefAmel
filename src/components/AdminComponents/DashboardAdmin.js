@@ -1,17 +1,14 @@
 import React, {useState} from "react";
 import './CSS/dashboardAdmin.css';
 import Path from "../Path";
-import axios from "axios";
+// import axios from "axios";
 import DonutChart from "react-donut-chart";
 import {Cell, Legend, Pie, PieChart, Tooltip} from "recharts";
 import {Bar, Doughnut} from "react-chartjs-2";
 import {Chart as ChartJS } from "chart.js/auto"
 import DoughnutEquipmentsCondition from "../DashboardComponents/DoughnutEquipmentsCondition";
 import BarEquipmentsAffectation from "../DashboardComponents/BarEquipmentsAffectation";
-import axiosInstance from "../../axiosConfig";
-
-
-
+import axios from "../../axios";
 
 const OverviewItem = (props) => {
     return (
@@ -30,28 +27,28 @@ const DashboardAdmin = () => {
     const [totalAllocationManagers, setTotalAllocationManagers] = useState(null);
     // const [equipmentData, setEquipmentData] = useState(null);
     // totalEquipment
-    axios.get('http://127.0.0.1:8000/inventory/')
+    axios.get('/inventory/')
         .then(response => {
             setTotalEquipments(response.data.length);
         })
 
     // total-categories
-    axios.get('http://127.0.0.1:8000/categories/')
+    axios.get('/categories/')
         .then(response => {
             setTotalCategories(response.data.length);
         })
     // total-locations
-    axios.get('http://127.0.0.1:8000/location/')
+    axios.get('/location/')
         .then(response => {
             setTotalLocations(response.data.length);
         })
     // total-genereal-managers
-    axios.get('http://127.0.0.1:8000/profiles/principalmanagers/')
+    axios.get('/profiles/principalmanagers/')
         .then(response => {
             setTotalGenerealManagers(response.data.length);
         })
     // total-allocation-managers
-    axios.get('http://127.0.0.1:8000/profiles/Allocationmanager/')
+    axios.get('/profiles/Allocationmanager/')
         .then(response => {
             setTotalAllocationManagers(response.data.length);
         })

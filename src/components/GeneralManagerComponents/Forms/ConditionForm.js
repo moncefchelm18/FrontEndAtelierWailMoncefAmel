@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axios from 'axios';
 
 const ConditionForm = (props) => {
@@ -9,14 +9,50 @@ const ConditionForm = (props) => {
         ['stolen', 'Stolen'],
         ['reserve', 'Reserved'],
     ];
+    const TYPE_CHOICES = [
+        ["lecture_halls", "Lecture Halls"],
+        ["practice_rooms", "Practice Rooms"],
+        ["lab_rooms", "Lab Rooms"],
+        ["administration", "Administration"],
+        ["reservation_room", "Reservation Room"],
+        ["it_room", "IT Room"],
+        ["corridors", "Corridors"],
+    ];
     const [condition, setCondition] = useState(props.selectedEquipment.condition);
     const [serialNumber, setSerialNumber] = useState(props.selectedEquipment.num_serie);
+    const [location, setLocation] = useState(props.selectedEquipment.Location);
     const [description, setDescription] = useState(props.selectedEquipment.discription);
     const [previewImage, setPreviewImage] = useState(props.selectedEquipment.image);
     const [message, setMessage] = useState(null);
+    const [locationType, setLocationType] = useState([]);
+    const [locations, setLocations] = useState([]);
+    const [filteredLocations, setFilteredLocations] = useState([]);
+    const [newLocation, setNewLocation] = useState("");
 
+
+    useEffect(() => {
+        const fetchLocations = async () => {
+            try {
+                const response = await axios.get("http://127.0.0.1:8000/location/");
+                setLocations(response.data);
+            } catch (error) {
+                console.error("Error fetching locations:", error);
+            }
+        };
+
+        fetchLocations();
+    }, []);
+    useEffect(() => {
+        if (locationType) {
+            const filtered = locations.filter((location) => location.type === locationType);
+            setFilteredLocations(filtered);
+        } else {
+            setFilteredLocations(locations);
+        }
+    }, [locationType, locations]);
     console.log(props.selectedEquipment);
     const handleSubmit = (event) => {
+        const updatedLocation = newLocation ? newLocation : location;
         event.preventDefault();
         const updatedCondition = {
             id: props.selectedEquipment.id,
@@ -30,7 +66,7 @@ const ConditionForm = (props) => {
             condition: condition,
             facture_number: props.selectedEquipment.facture_number,
             date_purchase: props.selectedEquipment.date_purchase,
-            Location: props.selectedEquipment.Location,
+            Location: updatedLocation,
             date_assignment: props.selectedEquipment.date_assignment,
             discription: description,
             image: event.target.image.files[0],
@@ -91,6 +127,12 @@ const ConditionForm = (props) => {
     const handleDescriptionChange = (event) => {
         setDescription(event.target.value);
     }
+    const handleLocationChange = (event) => {
+        const selectedLocation = event.target.value;
+        setNewLocation(selectedLocation);
+        console.log("Selected Location:", selectedLocation);
+    };
+
 
     return(
         <>
@@ -126,6 +168,16 @@ const ConditionForm = (props) => {
                         </div>
                     </div>
                     <div className="add-form-input">
+                        <label htmlFor="serialnumber">Current location</label>
+                        <input
+                            disabled={true}
+                            type="text"
+                            id="location"
+                            className="add-form-input-input"
+                            value={location}
+                        />
+                    </div>
+                    <div className="add-form-input">
                         <label htmlFor="name">Condition</label>
                         <select
                             id="condition"
@@ -141,6 +193,57 @@ const ConditionForm = (props) => {
                             ))}
                         </select>
                     </div>
+                    <div className="add-form-input">
+                        <label htmlFor="type">Type</label>
+                        <select
+                            id="type"
+                            className="add-form-input-input"
+                            value={locationType}
+                            onChange={(event) => {
+                                setLocationType(event.target.value);
+                                console.log("Selected Location Type:", event.target.value);
+                                const filtered = locations.filter((location) => location.type === event.target.value);
+                                setFilteredLocations(filtered);
+                                if (filtered.length === 1) {
+                                    setNewLocation(filtered[0].name);
+                                    console.log("Selected Location:", filtered[0].name);
+                                }
+                            }}
+                            /*onFocus={() => {
+                                setError(null);
+                                setSuccessMessage(null);
+                            }}*/
+                            /*onFocus={() => {
+                                setError(null);
+                                setSuccessMessage(null);
+                            }}*/
+                        >
+                            <option value="">--Select type--</option>
+                            {TYPE_CHOICES.map(([value, label]) => (
+                                <option value={value} key={value}>
+                                    {label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="add-form-input">
+                        <label htmlFor="type">New location</label>
+                        <select
+                            id="type"
+                            className="add-form-input-input"
+                            value={newLocation}
+                            onChange={handleLocationChange}
+                            onClick={handleLocationChange}
+                        >
+                            <option value="">-- Select location --</option> // Add the default option
+                            {filteredLocations.map((location) => (
+                                <option value={location.name} key={location.id}>
+                                    {location.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="add-form-input">
                         <label htmlFor="serialnumber">Serial number</label>
                         <input
