@@ -50,7 +50,7 @@ const ReservationRoom = (props) => {
 
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/location/')
+        fetch('http://172.20.10.4:8000/location/')
             .then(response => response.json())
             .then(data => {
                 setLocations(data);

@@ -203,7 +203,6 @@ const HPCScheduleResearcher = (props) => {
                             <p>{selectedEvent.title}</p>
                             <p>Start Date: {selectedEvent.start.toString()}</p>
                             <p>End Date: {selectedEvent.end.toString()}</p>
-                            {/* Add more event details as needed */}
                         </div>
                     </>
                 )}

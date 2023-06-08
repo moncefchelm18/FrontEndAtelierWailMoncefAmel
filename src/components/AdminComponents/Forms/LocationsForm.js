@@ -39,7 +39,7 @@ const LocationsForm = (props) => {
             created_on: new Date(),
         };
         setLoading(true);
-        fetch('http://127.0.0.1:8000/location/', {
+        fetch('http://172.20.10.4:8000/location/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

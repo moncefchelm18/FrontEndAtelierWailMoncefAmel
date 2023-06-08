@@ -31,7 +31,7 @@ const LocationsAdmin = () => {
         const fetchLocations = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://127.0.0.1:8000/location/', {
+                const response = await fetch('http://172.20.10.4:8000/location/', {
                     headers: {
                         Authorization: `Token ${cookies.token}`
                     }
@@ -105,7 +105,7 @@ const LocationsAdmin = () => {
                 created_on: props.location.created_on,
             };
             setLoading(true);
-            fetch(`http://127.0.0.1:8000/location/${props.location.id}/`, {
+            fetch(`http://172.20.10.4:8000/location/${props.location.id}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -217,7 +217,7 @@ const LocationsAdmin = () => {
     // delete button
     const handleDelete = (id) => {
         setLoading(true);
-        fetch(`http://127.0.0.1:8000/location/${id}/`, {
+        fetch(`http://172.20.10.4:8000/location/${id}/`, {
             method: 'DELETE',
             headers: {
                 Authorization: `Token ${cookies.token}`

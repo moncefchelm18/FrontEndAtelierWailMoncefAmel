@@ -33,7 +33,7 @@ const ConditionForm = (props) => {
     useEffect(() => {
         const fetchLocations = async () => {
             try {
-                const response = await axios.get("http://127.0.0.1:8000/location/");
+                const response = await axios.get("http://172.20.10.4:8000/location/");
                 setLocations(response.data);
             } catch (error) {
                 console.error("Error fetching locations:", error);

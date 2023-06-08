@@ -44,7 +44,7 @@ const CategoriesForm = (props) => {
             created_on: new Date(),
         };
         setLoading(true)
-        fetch('http://127.0.0.1:8000/categories/', {
+        fetch('http://172.20.10.4:8000/categories/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -126,8 +126,6 @@ const CategoriesForm = (props) => {
                 </div>
             </>
         )}</>
-
-
     )
 };
 

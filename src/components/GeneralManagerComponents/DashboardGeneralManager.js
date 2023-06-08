@@ -35,7 +35,7 @@ const DashboardGeneralManager = () => {
             setTotalCategories(response.data.length);
         })
     // total-locations
-    axios.get('http://127.0.0.1:8000/location/')
+    axios.get('http://172.20.10.4:8000/location/')
         .then(response => {
             setTotalLocations(response.data.length);
         })

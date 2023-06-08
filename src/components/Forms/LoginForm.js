@@ -41,7 +41,7 @@ const LoginForm = (props) => {
             }
         } catch (error) {
             console.log(error);
-            // setErrorMessage(<p style={{ color: 'red' }}>{error.toString()}</p>);
+            setErrorMessage(<p style={{ color: 'red' }}>{error.toString()}</p>);
         }
     };
 

@@ -83,7 +83,6 @@ const App = () => {
                 console.error("Error occurred while fetching user info:", error);
             }
         };
-
         fetchUserInfo();
     }, [cookies.token]);
 
@@ -91,15 +90,15 @@ const App = () => {
     const ProfileGuard = () => {
         console.log(cookies.token)
         console.log(cookies.role)
-            if (/*isValid &&*/ cookies.token && cookies.role === 'ADMIN') {
+        if (/*isValid &&*/ cookies.token && cookies.role === 'ADMIN') {
             return <Admin/>;
-        } else if(cookies.token && cookies.role === 'PRINCIPALMANAGER' && isValid){
+        } else if(isValid && cookies.token && cookies.role === 'PRINCIPALMANAGER'){
             return <GeneralManager/>;
         }else if(cookies.token && cookies.role === 'ALLOCATIONMANAGER' && isValid){
             return <AllocationManager/>;
         }else if(cookies.token && cookies.role === 'STUDENT' && isValid){
             return <Student/>;
-        }else if(cookies.token && cookies.role === 'RESEARCHER' && isValid){
+        }else if(cookies.token && cookies.role === 'RESEARCHER'){
             return <Researcher/>;
         }else {
             return <Navigate to="/Login" />;
@@ -111,7 +110,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/Login" element={<Login/>} />
                 <Route path="/SignUp" element={<SignUp/>} />
-                <Route path="/Admin" element={<ProfileGuard/>}>
+                <Route path="/Admin" element={<Admin/>}>
                     <Route path="" element={<DashboardAdmin />} />
                     <Route path="inventory" element={<InventoryAdmin />} />
                     <Route path="categories" element={<CategoriesAdmin />} />
