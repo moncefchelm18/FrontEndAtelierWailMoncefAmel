@@ -35,7 +35,7 @@ const UsersAllocationManager = (props) => {
     useEffect(() => {
         const fetchUsersData = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/profiles/users/', {
+                const response = await fetch('http://172.20.10.4:8000/profiles/users/', {
                     headers: {
                         Authorization: `Token ${cookies.token}`
                     }
@@ -75,7 +75,7 @@ const UsersAllocationManager = (props) => {
         )
     };
     const handleDelete = (id) => {
-        fetch(`http://127.0.0.1:8000/profiles/users/${id}/`, {
+        fetch(`http://172.20.10.4:8000/profiles/users/${id}/`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

@@ -32,7 +32,7 @@ const AllocationForm = (props) => {
         }else {
             console.log(data)
             try {
-                const response = await axios.post("http://127.0.0.1:8000/allocate/", data, {
+                const response = await axios.post("http://172.20.10.4:8000/allocate/", data, {
                     headers: {
                         'Authorization': `Token ${cookies.token}`
                     }
@@ -62,7 +62,7 @@ const AllocationForm = (props) => {
     return (
         <>
             <div className="add-form">
-                <h2>New HPC allocation</h2>
+                <h2>New allocation</h2>
                 <form onSubmit={handleSubmit}>
                     {message && message}
                     <div className="add-form-input">

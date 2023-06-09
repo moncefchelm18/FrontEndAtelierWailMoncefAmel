@@ -32,9 +32,9 @@ const ManagersForm = (props) => {
         let url = "";
         console.log(selectedType)
         if (selectedType === "Student") {
-            url = "http://127.0.0.1:8000/profiles/Student/";
+            url = "http://172.20.10.4:8000/profiles/Student/";
         } else if (selectedType === "Researcher") {
-            url = "http://127.0.0.1:8000/profiles/Researcher/";
+            url = "http://172.20.10.4:8000/profiles/Researcher/";
         }
 
         const data = {

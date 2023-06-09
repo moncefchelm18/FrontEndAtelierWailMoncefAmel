@@ -4,19 +4,21 @@ import GeneralManagerVerticalMenu from "./verticalMenuUsers/GeneralManagerVertic
 import AllocationManagerVerticalMenu from "./verticalMenuUsers/AllocationManagerVerticalMenu";
 import StudentVerticalMenu from "./verticalMenuUsers/StudentVerticalMenu";
 import ResearcherVerticalMenu from "./verticalMenuUsers/ResearcherVerticalMenu";
-import {Link} from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
 
 
 const VerticalMenu = (props) => {
-    const [cookies, setCookie, removeCookie] = useCookies(['token', 'role']);
-    const handleLogout = () => {
-        window.location.reload();
-        // Remove the 'token' cookie
-        removeCookie('token');
-        removeCookie('role', { path: '/' });
-    };
+    const [cookies, removeCookies] = useCookies();
 
+    const handleLogout = async () => {
+        // Remove all cookies
+        const cookieNames = Object.keys(cookies);
+
+        for (let i = 0; i < cookieNames.length; i++) {
+            await removeCookies(cookieNames[i]);
+        }
+    };
     return(
         <div className="menu-container">
             <div className="logo-container">

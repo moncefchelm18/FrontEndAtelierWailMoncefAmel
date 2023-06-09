@@ -18,7 +18,7 @@ const AssignementForm = (props) => {
 
     // getting-stock-data
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/equipement/")
+        fetch("http://172.20.10.4:8000/equipement/")
             .then((response) => response.json())
             .then((data) => {
                 setStockData(data);
@@ -45,7 +45,7 @@ const AssignementForm = (props) => {
                 const randomIndex = Math.floor(Math.random() * updatedFilteredStockData.length);
                 const reference = updatedFilteredStockData[randomIndex].reference;
                 const data = { reference: reference, Location: props.location };
-                fetch("http://127.0.0.1:8000/affectation", {
+                fetch("http://172.20.10.4:8000/affectation", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data),
@@ -75,7 +75,7 @@ const AssignementForm = (props) => {
 
     // forCategorieOptionList
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/categories/')
+        fetch('http://172.20.10.4:8000/categories/')
             .then(response => response.json())
             .then(data => {
                 setCategories(data);

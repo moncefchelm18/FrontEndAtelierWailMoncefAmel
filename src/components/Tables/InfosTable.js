@@ -89,7 +89,7 @@ const InfosTable = (props) => {
                                                 <img
                                                     width={40}
                                                     height={40}
-                                                    src={`http://127.0.0.1:8000${datas[props.columnMappings[title]]}`}
+                                                    src={`http://172.20.10.4:8000${datas[props.columnMappings[title]]}`}
                                                     onError={(e) => {
                                                         // Fall back to relative path if full URL fails to load
                                                         e.target.src = datas[props.columnMappings[title]] || defaultImageSrc;

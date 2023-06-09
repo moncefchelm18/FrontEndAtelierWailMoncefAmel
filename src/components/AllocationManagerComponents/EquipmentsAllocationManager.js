@@ -13,7 +13,7 @@ const EquipmentAllocationManager = (props) => {
     const headerButtonName = 'Filter';
     console.log(searchValueState);
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/allocation/')
+        fetch('http://172.20.10.4:8000/allocation/')
             .then(response => response.json())
             .then(data => {
                 setEquipmentData(data);

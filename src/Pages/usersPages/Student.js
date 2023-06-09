@@ -13,12 +13,33 @@ const Student = (props) => {
     const [notificationMessages, setNotificationMessages] = useState([]);
     const [connectedUserEmail, setConnectedUserEmail] = useState(null);
     const [cookies] = useCookies(['token']);
+    const [menuAppear, setMenuAppear] = useState(true);
+
+    const handleMenuToggle = () => {
+        setMenuAppear(!menuAppear);
+    };
+    useEffect(() => {
+        const handleWindowResize = () => {
+            if (window.innerWidth < 1024) {
+                setMenuAppear(false);
+            } else {
+                setMenuAppear(true);
+            }
+        };
+
+        window.addEventListener("resize", handleWindowResize);
+
+        // Cleanup the event listener on component unmount
+        return () => {
+            window.removeEventListener("resize", handleWindowResize);
+        };
+    }, []);
 
     // to get connected user email
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/connecteduser/', {
+                const response = await fetch('http://172.20.10.4:8000/connecteduser/', {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Token ${cookies.token}`,
@@ -43,7 +64,7 @@ const Student = (props) => {
     useEffect(() => {
         const fetchNotificationMessages = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/notificationmng');
+                const response = await axios.get('http://172.20.10.4:8000/notificationmng');
                 console.log(response.data);
                 console.log(connectedUserEmail);
                 const filteredMessages = response.data.filter(
@@ -63,9 +84,15 @@ const Student = (props) => {
 
     return (
         <div className="app-container">
-            <VerticalMenu displayStudentMenu={true} />
+            {menuAppear &&
+                <VerticalMenu displayStudentMenu={true} />
+            }
             <div className="main-container">
-                <Header notificationMessages={notificationMessages} searchValue={(value) => setSearchValue(value)} />
+                <Header
+                    notificationMessages={notificationMessages.reverse()}
+                    searchValue={(value) => setSearchValue(value)}
+                    menuAppear={handleMenuToggle}
+                />
                 <div className="content">
                     <SearchValueContext.Provider value={searchValue}>
                         <Outlet />

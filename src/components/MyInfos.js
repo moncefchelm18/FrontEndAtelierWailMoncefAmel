@@ -12,6 +12,7 @@ const MyInfos = (props) => {
     const [nationalId, setNationalId] = useState("");
     const [address, setAddress] = useState("");
     const [role, setRole] = useState("");
+    const [isActive, setIsActive] = useState("");
     const [previewImage, setPreviewImage] = useState(null);
     const [message, setMessage] = useState(null);
 
@@ -26,7 +27,7 @@ const MyInfos = (props) => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const response = await fetch("http://127.0.0.1:8000/connecteduser/", {
+                const response = await fetch("http://172.20.10.4:8000/connecteduser/", {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
@@ -45,7 +46,8 @@ const MyInfos = (props) => {
                     setNationalId(userData.national_card_number);
                     setAddress(userData.address);
                     setRole(userData.role);
-                    setPreviewImage(`http://127.0.0.1:8000${userData.image}`);
+                    setPreviewImage(`http://172.20.10.4:8000${userData.image}`);
+                    setIsActive(userData.is_active === true)
                 } else {
                     console.error("Failed to fetch user info:", response.statusText);
                 }
@@ -78,7 +80,7 @@ const MyInfos = (props) => {
 
         try {
             const response = await axios.put(
-                `http://127.0.0.1:8000/profiles/users/${userId}/`,
+                `http://172.20.10.4:8000/profiles/users/${userId}/`,
                 updatedData,
                 {
                     headers: {

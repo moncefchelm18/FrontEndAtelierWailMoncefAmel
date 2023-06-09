@@ -37,7 +37,7 @@ const CorridorsContent = (props) => {
     };
     const columnTitles = Object.keys(columnMappings);
     useEffect(() => {
-        fetch("http://127.0.0.1:8000/inventory/")
+        fetch("http://172.20.10.4:8000/inventory/")
             .then((response) => response.json())
             .then((data) => {
                 setInventoryData(data);

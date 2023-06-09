@@ -18,9 +18,8 @@ const ManagersForm = (props) => {
     const formRef = useRef(null);
     const handleFormSubmit = (event) => {
         event.preventDefault();
-
         formRef.current.scrollIntoView({ behavior: 'smooth' });
-        if (!password || !firstName || !lastName || !email || !phone || !nationalId || !address) {
+        if (!password || !firstName || !lastName || !email || !phone || !nationalId || !address || !event.target.image.files[0]) {
             setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Please fill all the fields!</p>);
             return;
         }
@@ -30,11 +29,14 @@ const ManagersForm = (props) => {
             return;
         }
 
+        if (!(nationalId.length === 18)){
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>National id must have 18 digits</p>);
+        }
         let url = "";
         if (selectedType === "General Manager") {
-            url = "http://127.0.0.1:8000/profiles/principalmanagers/";
+            url = "http://172.20.10.4:8000/profiles/principalmanagers/";
         } else if (selectedType === "Allocation Manager") {
-            url = "http://127.0.0.1:8000/profiles/Allocationmanager/";
+            url = "http://172.20.10.4:8000/profiles/Allocationmanager/";
         }
 
         const data = new FormData();
@@ -52,18 +54,18 @@ const ManagersForm = (props) => {
         axios.post(url, data, {
             headers: {
                 "Content-Type": "multipart/form-data",
-                Authorization: `Token ${cookies.token}`, // Assuming you have access to cookies containing the token
+                Authorization: `Token ${cookies.token}`,
             },
         })
             .then(response => {
                 console.log(response);
                 if (response.status === 200) {
-                    // Manager added successfully
-                    // Perform any additional actions or update state as needed
+                    setMessage(<p style={{color: 'green'}}>Manager added successfully!</p>)
                     console.log('Manager added successfully');
                 } else {
                     // Error occurred during manager addition
                     console.error('Error adding manager:', response.statusText);
+                    setMessage(<p style={{color: 'red'}}>'Error adding manager: {response.statusText}</p>)
                 }
             })
             .catch(error => {

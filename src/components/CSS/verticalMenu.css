@@ -2,10 +2,10 @@
     display: flex;
     flex-direction: column;
     background-color: #314985;
-    /*height: 100%;*/
-    /*overflow: auto;*/
     width: 250px;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Add transition properties */
 }
+
 
 .logo-container {
     padding: 9.5px 0;

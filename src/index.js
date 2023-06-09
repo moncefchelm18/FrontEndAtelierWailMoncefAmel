@@ -65,7 +65,7 @@ const App = () => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const response = await fetch("http://127.0.0.1:8000/connecteduser/", {
+                const response = await fetch("http://172.20.10.4:8000/connecteduser/", {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
@@ -90,15 +90,15 @@ const App = () => {
     const ProfileGuard = () => {
         console.log(cookies.token)
         console.log(cookies.role)
-        if (/*isValid &&*/ cookies.token && cookies.role === 'ADMIN') {
+        if (/*isValid && */cookies.token && cookies.role === 'ADMIN') {
             return <Admin/>;
-        } else if(isValid && cookies.token && cookies.role === 'PRINCIPALMANAGER'){
+        } else if(/*isValid && */cookies.token && cookies.role === 'PRINCIPALMANAGER'){
             return <GeneralManager/>;
-        }else if(cookies.token && cookies.role === 'ALLOCATIONMANAGER' && isValid){
+        }else if( cookies.token && cookies.role === 'ALLOCATIONMANAGER' ){
             return <AllocationManager/>;
-        }else if(cookies.token && cookies.role === 'STUDENT' && isValid){
+        }else if(cookies.token && cookies.role === 'STUDENT'){
             return <Student/>;
-        }else if(cookies.token && cookies.role === 'RESEARCHER'){
+        }else if(isValid && cookies.token && cookies.role === 'RESEARCHER'){
             return <Researcher/>;
         }else {
             return <Navigate to="/Login" />;
@@ -110,7 +110,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/Login" element={<Login/>} />
                 <Route path="/SignUp" element={<SignUp/>} />
-                <Route path="/Admin" element={<Admin/>}>
+                <Route path="/Admin" element={<ProfileGuard/>}>
                     <Route path="" element={<DashboardAdmin />} />
                     <Route path="inventory" element={<InventoryAdmin />} />
                     <Route path="categories" element={<CategoriesAdmin />} />

@@ -8,7 +8,7 @@ const DoughnutEquipmentsCondition = () => {
 
     useEffect(() => {
         axios
-            .get("http://127.0.0.1:8000/inventory/")
+            .get("http://172.20.10.4:8000/inventory/")
             .then((response) => {
                 setEquipmentData(response.data);
             })

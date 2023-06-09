@@ -12,10 +12,31 @@ const Researcher = (props) => {
     const [notificationMessages, setNotificationMessages] = useState([]);
     const [connectedUserEmail, setConnectedUserEmail] = useState(null);
     const [cookies] = useCookies(['token']);
+    const [menuAppear, setMenuAppear] = useState(true);
+
+    const handleMenuToggle = () => {
+        setMenuAppear(!menuAppear);
+    };
+    useEffect(() => {
+        const handleWindowResize = () => {
+            if (window.innerWidth < 1024) {
+                setMenuAppear(false);
+            } else {
+                setMenuAppear(true);
+            }
+        };
+
+        window.addEventListener("resize", handleWindowResize);
+
+        // Cleanup the event listener on component unmount
+        return () => {
+            window.removeEventListener("resize", handleWindowResize);
+        };
+    }, []);
 
     useEffect(() => {
         // Fetch notification messages from the API endpoint
-        axios.get('http://127.0.0.1:8000/notificationmng')
+        axios.get('http://172.20.10.4:8000/notificationmng')
             .then((response) => {
                 const filteredNotificationMessages = response.data.filter()
                 setNotificationMessages(response.data);
@@ -29,7 +50,7 @@ const Researcher = (props) => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/connecteduser/', {
+                const response = await fetch('http://172.20.10.4:8000/connecteduser/', {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Token ${cookies.token}`,
@@ -54,7 +75,7 @@ const Researcher = (props) => {
     useEffect(() => {
         const fetchNotificationMessages = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/notificationmng');
+                const response = await axios.get('http://172.20.10.4:8000/notificationmng');
                 console.log(response.data);
                 console.log(connectedUserEmail);
                 const filteredMessages = response.data.filter(
@@ -74,9 +95,15 @@ const Researcher = (props) => {
 
     return(
         <div className="app-container">
-            <VerticalMenu displayResearcherMenu={true} />
+            {menuAppear &&
+                <VerticalMenu displayResearcherMenu={true} />
+            }
             <div className="main-container">
-                <Header notificationMessages={notificationMessages} searchValue={(value) => setSearchValue(value)}/>
+                <Header
+                    notificationMessages={notificationMessages.reverse()}
+                    searchValue={(value) => setSearchValue(value)}
+                    menuAppear={handleMenuToggle}
+                />
                 <div className="content">
                     <SearchValueContext.Provider value={searchValue}>
                         <Outlet/>

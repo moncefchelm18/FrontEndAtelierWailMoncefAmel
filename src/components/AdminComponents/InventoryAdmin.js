@@ -46,7 +46,7 @@ const InventoryAdmin = () => {
         const fetchEquipmentData = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://127.0.0.1:8000/inventory/', {
+                const response = await fetch('http://172.20.10.4:8000/inventory/', {
                     headers: {
                         Authorization: `Token ${cookies.token}`
                     }

@@ -57,7 +57,7 @@ const StockGeneralManager = (props) => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get('http://127.0.0.1:8000/equipement/', {
+            .get('http://172.20.10.4:8000/equipement/', {
                 params: {
                     _start: (currentPage - 1) * 10,
                     _limit: 10,
@@ -94,7 +94,7 @@ const StockGeneralManager = (props) => {
 
 
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/stock/')
+        fetch('http://172.20.10.4:8000/stock/')
             .then(response => response.json())
             .then(data => {
                 console.log(data.detail);
@@ -116,7 +116,7 @@ const StockGeneralManager = (props) => {
     }
     function handleDeleteStock(id) {
         console.log(id);
-        fetch(`http://127.0.0.1:8000/stock/${id}/`, {
+        fetch(`http://172.20.10.4:8000/stock/${id}/`, {
             method: 'DELETE'
         })
             .then(response => {
@@ -130,7 +130,7 @@ const StockGeneralManager = (props) => {
 
 
     /*const getUpdatedData = (data) => {
-        fetch(`http://127.0.0.1:8000/equipement/${data['new equipement'].id}`)
+        fetch(`http://172.20.10.4:8000/equipement/${data['new equipement'].id}`)
             .then(response => response.json())
             .then(equipmentDatas => {
                 setEquipmentData([...equipmentData, equipmentDatas]);
@@ -168,7 +168,7 @@ const StockGeneralManager = (props) => {
                 // image: props.equipment.image,
             };
 
-            fetch(`http://127.0.0.1:8000/equipement/${props.equipment.id}/`, {
+            fetch(`http://172.20.10.4:8000/equipement/${props.equipment.id}/`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -250,7 +250,7 @@ const StockGeneralManager = (props) => {
     };
     // delete button
     const handleDelete = (id) => {
-        fetch(`http://127.0.0.1:8000/equipement/${id}/`, {
+        fetch(`http://172.20.10.4:8000/equipement/${id}/`, {
             method: 'DELETE'
         })
             .then(response => {

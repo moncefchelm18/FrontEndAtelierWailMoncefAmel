@@ -6,7 +6,11 @@
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     z-index: 9;
 }
-
+.header-infos{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
 .title {
 
 }
@@ -21,4 +25,10 @@
 .header-user-icon img{
     width: 60px;
     height: 60px;
+}
+
+@media (max-width: 767px) {
+    .header-infos h1{
+        display: none;
+    }
 }

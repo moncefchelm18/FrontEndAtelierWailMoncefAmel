@@ -21,12 +21,12 @@ const StockForm = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!name || !brand || !model || !selectedCategory || !factureNumber || !datePurchase || !quantite/*|| !event.target.image.files[0]*/){
+        if (!name || !brand || !model || !selectedCategory || !factureNumber || !datePurchase || !quantite|| !event.target.image.files[0]){
             setMessage(<p style={{color: 'red'}}>Please fill all columns!</p>)
             formRef.current.scrollIntoView({ behavior: 'smooth' });
         }else{
             const formData = new FormData();
-            formData.append('created_by', 1);
+            formData.append('created_by', 2);
             formData.append('name', name);
             formData.append('brand', brand);
             formData.append('model', model);
@@ -38,7 +38,7 @@ const StockForm = (props) => {
             formData.append('image', event.target.image.files[0] || '');
 
             console.log(event.target.image.files[0])
-            fetch('http://127.0.0.1:8000/stock/', {
+            fetch('http://172.20.10.4:8000/stock/', {
                 method: 'POST',
                 body: formData,
             })
@@ -64,7 +64,7 @@ const StockForm = (props) => {
 
     // forCategorieOptionList
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/categories/')
+        fetch('http://172.20.10.4:8000/categories/')
             .then(response => response.json())
             .then(data => {
                 setCategories(data);

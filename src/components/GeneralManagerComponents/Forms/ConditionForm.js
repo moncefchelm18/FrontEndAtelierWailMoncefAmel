@@ -75,7 +75,7 @@ const ConditionForm = (props) => {
         }
         console.log(updatedCondition.image)
         console.log(updatedCondition)
-        fetch(`http://127.0.0.1:8000/inventory/${props.selectedEquipment.id}`, {
+        fetch(`http://172.20.10.4:8000/inventory/${props.selectedEquipment.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -137,10 +137,10 @@ const ConditionForm = (props) => {
     return(
         <>
             <div className="add-form">
-                <h2>Update equipment condition</h2>
+                <h2>Update equipment</h2>
                 {message && message}
                 <form onSubmit={handleSubmit} onClick={() => setMessage(null)}>
-                    <div className="form-container-form-infos-input-img">
+                    <div className="form-container-form-infos-input-img" style={{display: 'none'}}>
                         <label htmlFor="image">
                             {previewImage ? (
                                 <img className="preview-image" src={previewImage} alt="Preview"/>

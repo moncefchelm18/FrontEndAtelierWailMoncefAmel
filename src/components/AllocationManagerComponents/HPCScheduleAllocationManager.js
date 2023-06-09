@@ -18,7 +18,7 @@ const HPCScheduleAllocationManager = (props) => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/allocatehpc/');
+                const response = await axios.get('http://172.20.10.4:8000/allocatehpc/');
                 const data = response.data;
 
                 const formattedEvents = data.map((event) => {

@@ -24,13 +24,13 @@ const DashboardGeneralManager = () => {
     const [totalAllocationManagers, setTotalAllocationManagers] = useState(null);
     // const [equipmentData, setEquipmentData] = useState(null);
     // totalEquipment
-    axios.get('http://127.0.0.1:8000/inventory/')
+    axios.get('http://172.20.10.4:8000/inventory/')
         .then(response => {
             setTotalEquipments(response.data.length);
         })
 
     // total-categories
-    axios.get('http://127.0.0.1:8000/categories/')
+    axios.get('http://172.20.10.4:8000/categories/')
         .then(response => {
             setTotalCategories(response.data.length);
         })
@@ -40,12 +40,12 @@ const DashboardGeneralManager = () => {
             setTotalLocations(response.data.length);
         })
     // total-genereal-managers
-    axios.get('http://127.0.0.1:8000/profiles/principalmanagers/')
+    axios.get('http://172.20.10.4:8000/profiles/principalmanagers/')
         .then(response => {
             setTotalGenerealManagers(response.data.length);
         })
     // total-allocation-managers
-    axios.get('http://127.0.0.1:8000/profiles/Allocationmanager/')
+    axios.get('http://172.20.10.4:8000/profiles/Allocationmanager/')
         .then(response => {
             setTotalAllocationManagers(response.data.length);
         })

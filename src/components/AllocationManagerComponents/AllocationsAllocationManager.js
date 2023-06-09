@@ -51,7 +51,7 @@ const AllocationsAllocationManager = (props) => {
         const fetchAllocationsData = async () => {
             try {
                 // Fetch the users' data
-                const usersResponse = await fetch('http://127.0.0.1:8000/profiles/users/', {
+                const usersResponse = await fetch('http://172.20.10.4:8000/profiles/users/', {
                     headers: {
                         Authorization: `Token ${cookies.token}`,
                     },
@@ -64,7 +64,7 @@ const AllocationsAllocationManager = (props) => {
                     );
 
                     // Fetch the equipment data from the API
-                    const allocationsResponse = await axios.get('http://127.0.0.1:8000/allocate/');
+                    const allocationsResponse = await axios.get('http://172.20.10.4:8000/allocate/');
                     const allocationsData = allocationsResponse.data;
                     console.log(allocationsData)
                     // Filter and map the data to include only "Active" allocations and user details
@@ -135,7 +135,7 @@ const AllocationsAllocationManager = (props) => {
         };
 
         axios
-            .post('http://127.0.0.1:8000/acceptrequest/', data, config)
+            .post('http://172.20.10.4:8000/acceptrequest/', data, config)
             .then((response) => {
                 console.log('Success:', response.data);
                 const updatedPendingEquipmentData = pendingEquipmentData.filter(
@@ -167,7 +167,7 @@ const AllocationsAllocationManager = (props) => {
         };
         console.log(data)
         axios
-            .post('http://127.0.0.1:8000/acceptrequest/', data, config)
+            .post('http://172.20.10.4:8000/acceptrequest/', data, config)
             .then((response) => {
                 console.log('Success:', response.data);
                 const updatedPendingEquipmentData = pendingEquipmentData.filter(
@@ -215,7 +215,7 @@ const AllocationsAllocationManager = (props) => {
                 Authorization: `Token ${cookies.token}`
             }
         };
-        axios.post('http://127.0.0.1:8000/return/', data, config)
+        axios.post('http://172.20.10.4:8000/return/', data, config)
             .then((response) => {
                 console.log(response)
                 console.log(response.data)
@@ -224,7 +224,7 @@ const AllocationsAllocationManager = (props) => {
             .catch((error) => {
                 console.log('Error:', error.response);
             });
-        axios.delete(`http://127.0.0.1:8000/allocate/${allocation.id}`, config)
+        axios.delete(`http://172.20.10.4:8000/allocate/${allocation.id}`, config)
             .then((response) => {
                 console.log(response.data.message);
                 setActiveEquipmentData(prevData => prevData.filter(item => item.id !== allocation.id));

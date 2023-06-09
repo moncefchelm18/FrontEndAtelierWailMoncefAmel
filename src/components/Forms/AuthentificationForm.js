@@ -18,46 +18,48 @@ const AuthentificationForm = (props) => {
 
     const handleFormSubmit = (event) => {
         event.preventDefault();
-        formRef.current.scrollIntoView({behavior: 'smooth'});
+        formRef.current.scrollIntoView({ behavior: 'smooth' });
 
         if (password !== confirmPassword) {
-            setMessage(<p style={{color: 'red'}}>Make sure password match!</p>)
+            setMessage(<p style={{ color: 'red' }}>Make sure password match!</p>)
             return;
         }
-        console.log(selectedType)
+
         let url = "";
         if (selectedType === "Student") {
-            url = "http://127.0.0.1:8000/profiles/Student/";
+            url = "http://172.20.10.4:8000/profiles/Student/";
         } else if (selectedType === "Researcher") {
-            url = "http://127.0.0.1:8000/profiles/Researcher/";
+            url = "http://172.20.10.4:8000/profiles/Researcher/";
         }
-        const data = {
-            password: password,
-            email: email,
-            name: firstName,
-            lastname: lastName,
-            phonenumber: phone,
-            national_card_number: nationalId,
-            address: address,
-        }
-        console.log(data);
-        console.log(url);
+
+        const data = new FormData();
+        data.append("password", password);
+        data.append("email", email);
+        data.append("name", firstName);
+        data.append("lastname", lastName);
+        data.append("phonenumber", phone);
+        data.append("national_card_number", nationalId);
+        data.append("address", address);
+        data.append("image", event.target.image.files[0]);
+
         fetch(url, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
+            body: data,
         })
             .then((response) => {
-                console.log(response)
-                response.json();
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
             })
             .then((data) => {
+                setMessage(<p style={{color: 'green'}}>Account created successfully!</p>)
                 console.log("Success:", data);
             })
-
-    }
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    };
     const handleImageChange = (event) => {
         const imageFile = event.target.files[0];
         const imageUrl = URL.createObjectURL(imageFile);

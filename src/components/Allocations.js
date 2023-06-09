@@ -38,7 +38,7 @@ const Allocations = () => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/connecteduser/', {
+                const response = await fetch('http://172.20.10.4:8000/connecteduser/', {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
@@ -63,7 +63,7 @@ const Allocations = () => {
     }, [cookies.token]);
     // for showing data
     useEffect(() => {
-        fetch('http://127.0.0.1:8000/allocation/', {
+        fetch('http://172.20.10.4:8000/allocation/', {
             headers: {
                 'Authorization': `Token ${cookies.token}`
             }
@@ -77,7 +77,7 @@ const Allocations = () => {
 
     useEffect(() => {
         if (connectedUserId) {
-            fetch('http://127.0.0.1:8000/allocate/', {
+            fetch('http://172.20.10.4:8000/allocate/', {
                 headers: {
                     'Authorization': `Token ${cookies.token}`
                 }
@@ -92,7 +92,7 @@ const Allocations = () => {
 
     useEffect(() => {
         if (connectedUserId) {
-            fetch('http://127.0.0.1:8000/allocate/', {
+            fetch('http://172.20.10.4:8000/allocate/', {
                 headers: {
                     'Authorization': `Token ${cookies.token}`
                 }

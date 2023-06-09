@@ -28,7 +28,7 @@ const HPCScheduleResearcher = (props) => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/connecteduser/', {
+                const response = await fetch('http://172.20.10.4:8000/connecteduser/', {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
@@ -53,7 +53,7 @@ const HPCScheduleResearcher = (props) => {
     }, [cookies.token]);
     useEffect(() => {
         if (connectedUserId) {
-            fetch('http://127.0.0.1:8000/allocatehpc/', {
+            fetch('http://172.20.10.4:8000/allocatehpc/', {
                 headers: {
                     'Authorization': `Token ${cookies.token}`
                 }
@@ -93,7 +93,7 @@ const HPCScheduleResearcher = (props) => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/allocatehpc/');
+                const response = await axios.get('http://172.20.10.4:8000/allocatehpc/');
                 const data = response.data;
 
                 const formattedEvents = data.map((event) => {

@@ -6,6 +6,7 @@ import InfosTable from "./Tables/InfosTable";
 import EquipmentTableHeader from "./EquipmentTableHeader";
 import EquipmentTableFooter from "./EquipmentTableFooter";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 const Header = (props) => {
     const [cookies] = useCookies(['token']);
@@ -19,6 +20,8 @@ const Header = (props) => {
     const [notificationMessages, setNotificationMessages] = useState([]);
     const [notificationCount, setNotificationCount] = useState(notificationMessages.length);
     const [userImage, setUserImage] = useState(null);
+    const [menuAppear, setMenuAppear] = useState(false);
+
 
     const columnMappings = {
         // "ID": "id",
@@ -35,7 +38,7 @@ const Header = (props) => {
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/connecteduser/', {
+                const response = await fetch('http://172.20.10.4:8000/connecteduser/', {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
@@ -74,7 +77,7 @@ const Header = (props) => {
     }
     const handleDelete = async (notification) => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/notificationstd/${notification.id}`);
+            await axios.delete(`http://172.20.10.4:8000/notificationstd/${notification.id}`);
             setNotificationMessages(prevMessages => prevMessages.filter(msg => msg.id !== notification.id));
         } catch (error) {
             console.error('Failed to delete notification:', error);
@@ -106,11 +109,23 @@ const Header = (props) => {
         setCurrentPage(currentPage - 1);
     };
     const totalPages = Math.ceil(props.notificationMessages.length / 10);
+    const handleMenuAppear = () => {
+        setMenuAppear(!menuAppear)
+        props.menuAppear(menuAppear)
+    }
 
 
     return (
         <header className="header">
-            <h1 className="title">Welcome, {firstName} {lastName}</h1>
+            <div className="header-infos">
+                <div style={{cursor: 'pointer'}} onClick={handleMenuAppear}>
+                    <svg width="40" height="40" viewBox="0 0 459 322" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23 23H229.426H435.852M23 160.617H435.852M23 298.235H435.852" stroke="black" stroke-width="45.8724" stroke-linecap="round"/>
+                    </svg>
+
+                </div>
+                <h1 className="title">Welcome, {firstName} {lastName}</h1>
+            </div>
             <div className="header-items">
                 <div style={{cursor: 'pointer'}} className="action-button" onClick={handleSearchIconClick}>
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -167,13 +182,15 @@ const Header = (props) => {
                         </div>
                     </>
                 )}
-                <div className="header-user-icon">
-                    {userImage ? (
-                        <img src={`http://127.0.0.1:8000${userImage}`} alt="User" style={{borderRadius: '100%'}} />
-                    ) : (
-                        <img src="https://icons.veryicon.com/png/o/business/multi-color-financial-and-business-icons/user-139.png" alt="User" />
-                    )}
-                </div>
+                <Link to="myaccount">
+                    <div className="header-user-icon">
+                        {userImage ? (
+                            <img src={`http://172.20.10.4:8000${userImage}`} alt="User" style={{borderRadius: '100%'}} />
+                        ) : (
+                            <img src="https://icons.veryicon.com/png/o/business/multi-color-financial-and-business-icons/user-139.png" alt="User" />
+                        )}
+                    </div>
+                </Link>
             </div>
         </header>
     );

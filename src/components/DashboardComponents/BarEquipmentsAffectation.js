@@ -11,10 +11,10 @@ const BarEquipmentsAffectation = () => {
         const fetchData = async () => {
             try {
                 const stockResponse = await axios.get(
-                    "http://127.0.0.1:8000/equipement/"
+                    "http://172.20.10.4:8000/equipement/"
                 );
                 const inventoryResponse = await axios.get(
-                    "http://127.0.0.1:8000/inventory/"
+                    "http://172.20.10.4:8000/inventory/"
                 );
 
                 setStockData(stockResponse.data);

@@ -12,13 +12,13 @@ const PieChartStudentsResearchers = () => {
         const fetchData = async () => {
             try {
                 const allocateResponse = await axios.get(
-                    "http://127.0.0.1:8000/allocate/"
+                    "http://172.20.10.4:8000/allocate/"
                 );
                 const studentsResponse = await axios.get(
-                    "http://127.0.0.1:8000/profiles/Student/"
+                    "http://172.20.10.4:8000/profiles/Student/"
                 );
                 const researchersResponse = await axios.get(
-                    "http://127.0.0.1:8000/profiles/Researcher/"
+                    "http://172.20.10.4:8000/profiles/Researcher/"
                 );
 
                 setAllocationData(allocateResponse.data);

@@ -9,11 +9,22 @@ export const SearchValueContext = createContext('');
 
 const Admin = (props) => {
     const [searchValue, setSearchValue] = useState('');
+    const [menuAppear, setMenuAppear] = useState(true);
+    const handleMenuAppear = () => {
+        setMenuAppear(!menuAppear)
+    }
+
     return (
         <div className="app-container">
-            <VerticalMenu displayAdminMenu={true} />
+            {menuAppear &&
+                <VerticalMenu displayAdminMenu={true} />
+            }
             <div className="main-container">
-                <Header notificationMessages={[]} searchValue={(value) => setSearchValue(value)}/>
+                <Header
+                    notificationMessages={[]}
+                    searchValue={(value) => setSearchValue(value)}
+                    menuAppear={handleMenuAppear}
+                />
                 {/*{searchValue}*/}
                 <div className="content">
                     <SearchValueContext.Provider value={searchValue}>

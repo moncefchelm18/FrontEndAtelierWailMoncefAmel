@@ -5,7 +5,7 @@ import {useCookies} from "react-cookie";
 const HPCAllocationForm = (props) => {
     const [locations, setLocations] = useState([]);
     const [references, setReferences] = useState([]);
-    const [usedReferences, setUsedReferences] = useState([]);
+        const [usedReferences, setUsedReferences] = useState([]);
     const [selectedReference, setSelectedReference] = useState("");
     const [selectedStartDate, setSelectedStartDate] = useState("");
     const [cookies] = useCookies(["token"]);
@@ -22,7 +22,7 @@ const HPCAllocationForm = (props) => {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/allocatehpc/');
+                const response = await axios.get('http://172.20.10.4:8000/allocatehpc/');
                 const data = response.data;
                 const usedReferences = data.map(item => item.reference)
                 console.log(usedReferences)
@@ -42,7 +42,7 @@ const HPCAllocationForm = (props) => {
             const itRoomNames = itRoom.map(item => item.name);
             console.log(itRoomNames);
 
-            fetch("http://127.0.0.1:8000/inventory/")
+            fetch("http://172.20.10.4:8000/inventory/")
                 .then(response => response.json())
                 .then(data => {
                     const filteredEquipments = data.filter(equipment => itRoomNames.includes(equipment.Location));

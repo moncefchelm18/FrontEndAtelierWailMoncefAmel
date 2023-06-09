@@ -52,11 +52,6 @@ const DashboardAdmin = () => {
         .then(response => {
             setTotalAllocationManagers(response.data.length);
         })
-
-
-
-
-
     return (
         <>
             <Path pathName={'Dashboard'}/>
@@ -103,7 +98,10 @@ const DashboardAdmin = () => {
                 </div>
                 <div className="dashboard-equipment-container-2">
                     <h2>Equipments affectation</h2>
-                    <div className="dashboard-equipment-charts">
+                    <div
+                        className="dashboard-equipment-charts"
+                        style={{width:'90%', height:'100%'}}
+                    >
                         <BarEquipmentsAffectation/>
                     </div>
                 </div>
