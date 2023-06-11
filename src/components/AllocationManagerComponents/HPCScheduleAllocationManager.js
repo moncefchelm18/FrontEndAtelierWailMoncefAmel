@@ -70,8 +70,12 @@ const HPCScheduleAllocationManager = (props) => {
                         <div className="add-form ">
                             <h2>Event Details</h2>
                             <p>{selectedEvent.title}</p>
-                            <p>Start Date: {selectedEvent.start.toString()}</p>
-                            <p>End Date: {selectedEvent.end.toString()}</p>
+                            <p>
+                                <strong>Start Date:</strong> {selectedEvent.start.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
+                            </p>
+                            <p>
+                                <strong>End Date:</strong> {selectedEvent.end.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
+                            </p>
                         </div>
                     </>
                 )}

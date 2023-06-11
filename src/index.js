@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 // import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes, Navigate, Outlet} from 'react-router-dom';
 
 import './style.css';
 import Home from './Pages/home.js';
@@ -57,11 +57,13 @@ import ItRoomContent
 import CorridorsContent
     from "./components/GeneralManagerComponents/AssignementComponents/AssignementContentComponents/CorridorsContent";
 import {useCookies} from "react-cookie";
+import Loading from "./components/Loading";
+import DashboardAllocationManager from "./components/AllocationManagerComponents/DashboardAllocationManager";
 
 
 const App = () => {
     const [cookies] = useCookies(['token', 'role']);
-    const [isValid, setIsValid] = useState(false);
+    const [isActive, setIsActive] = useState(false);
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
@@ -75,7 +77,7 @@ const App = () => {
                 if (response.ok) {
                     const userData = await response.json();
                     console.log(userData);
-                    setIsValid(userData.is_active === true); // Update the isValid state based on userData.is_active value
+                    setIsActive(userData.is_active === true); // Update the isValid state based on userData.is_active value
                 } else {
                     console.error("Failed to fetch user info:", response.statusText);
                 }
@@ -88,82 +90,141 @@ const App = () => {
 
     // Route guard for '/Admin' route
     const ProfileGuard = () => {
-        console.log(cookies.token)
-        console.log(cookies.role)
-        if (/*isValid && */cookies.token && cookies.role === 'ADMIN') {
-            return <Admin/>;
-        } else if(/*isValid && */cookies.token && cookies.role === 'PRINCIPALMANAGER'){
-            return <GeneralManager/>;
-        }else if( cookies.token && cookies.role === 'ALLOCATIONMANAGER' ){
-            return <AllocationManager/>;
-        }else if(cookies.token && cookies.role === 'STUDENT'){
-            return <Student/>;
-        }else if(isValid && cookies.token && cookies.role === 'RESEARCHER'){
-            return <Researcher/>;
-        }else {
-            return <Navigate to="/Login" />;
+        const [cookies] = useCookies();
+        const [isValid, setIsValid] = useState(false);
+        const [isLoading, setIsLoading] = useState(true);
+
+        useEffect(() => {
+            // Simulating a validation process
+            setTimeout(() => {
+                // Check if token and role are valid
+                if (cookies.token && cookies.role && isActive) {
+                    setIsValid(true);
+                }
+                setIsLoading(false);
+            }, 1000); // Adjust the timeout duration as needed
+        }, [cookies]);
+
+        if (isLoading) {
+            // Show loading state
+            return <div><Loading/></div>;
         }
+
+        if (isValid) {
+            // Redirect to the corresponding page based on role
+            if (cookies.role === 'ADMIN') {
+                return <Admin/>;
+            } else if (cookies.role === 'PRINCIPALMANAGER') {
+                return <GeneralManager/>;
+            } else if (cookies.role === 'ALLOCATIONMANAGER') {
+                return <AllocationManager/>;
+            } else if (cookies.role === 'STUDENT') {
+                return <Student/>;
+            } else if (cookies.role === 'RESEARCHER') {
+                return <Researcher/>;
+            }
+        }
+        return <Navigate to="/Login"/>;
+    };
+    const RoleGuard = ({expectedRole}) => {
+        const [cookies] = useCookies();
+        const [isValid, setIsValid] = useState(false);
+        const [isLoading, setIsLoading] = useState(true);
+
+        useEffect(() => {
+            // Simulating a validation process
+            setTimeout(() => {
+                // Check if token and role are valid
+                if (cookies.token && cookies.role && isActive) {
+                    setIsValid(cookies.role === expectedRole);
+                }
+                setIsLoading(false);
+            }, 1000); // Adjust the timeout duration as needed
+        }, [cookies, expectedRole]);
+
+        if (isLoading) {
+            // Show loading state
+            return <div><Loading/></div>;
+        }
+
+        if (isValid) {
+            // Render the child components
+            return <Outlet/>;
+        }
+
+        // Redirect to the previous path
+        return <Navigate to="/Login"/>;
     };
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/Login" element={<Login/>} />
-                <Route path="/SignUp" element={<SignUp/>} />
+                <Route path="/" element={<Home/>}/>
+                <Route path="/Login" element={<Login/>}/>
+                <Route path="/SignUp" element={<SignUp/>}/>
                 <Route path="/Admin" element={<ProfileGuard/>}>
-                    <Route path="" element={<DashboardAdmin />} />
-                    <Route path="inventory" element={<InventoryAdmin />} />
-                    <Route path="categories" element={<CategoriesAdmin />} />
-                    <Route path="locations" element={<LocationsAdmin />} />
-                    <Route path="managers" element={<ManagersAdmin />} />
-                    <Route path="myaccount" element={<MyAccountAdmin />} />
+                    <Route element={<RoleGuard expectedRole="ADMIN"/>}>
+                        <Route path="" element={<DashboardAdmin/>}/>
+                        <Route path="inventory" element={<InventoryAdmin/>}/>
+                        <Route path="categories" element={<CategoriesAdmin/>}/>
+                        <Route path="locations" element={<LocationsAdmin/>}/>
+                        <Route path="managers" element={<ManagersAdmin/>}/>
+                        <Route path="myaccount" element={<MyAccountAdmin/>}/>
+                    </Route>
                 </Route>
                 <Route path="/GeneralManager" element={<ProfileGuard/>}>
-                    <Route path="" element={<DashboardGeneralManager/>}/>
-                    <Route path="stock" element={<StockGeneralManager/>}/>
-                    <Route path="inventory" element={<InventoryGeneralManager/>}/>
-                    <Route path="assignement" element={<Assignement/>}>
-                        <Route path="LectureHalls" element={<LectureHalls/>}>
-                            <Route path=':id' element={<LectureHallsContent/>} />
+                    <Route element={<RoleGuard expectedRole="PRINCIPALMANAGER"/>}>
+                        <Route path="" element={<DashboardGeneralManager/>}/>
+                        <Route path="stock" element={<StockGeneralManager/>}/>
+                        <Route path="inventory" element={<InventoryGeneralManager/>}/>
+                        <Route path="assignement" element={<Assignement/>}>
+                            <Route path="LectureHalls" element={<LectureHalls/>}>
+                                <Route path=':id' element={<LectureHallsContent/>}/>
+                            </Route>
+                            <Route path="PracticeRooms" element={<PracticeRooms/>}>
+                                <Route path=':id' element={<PracticeRoomsContent/>}/>
+                            </Route>
+                            <Route path="LabRooms" element={<LabRooms/>}>
+                                <Route path=':id' element={<LabRoomsContent/>}/>
+                            </Route>
+                            <Route path="Administration" element={<Administration/>}>
+                                <Route path=':id' element={<AdministrationContent/>}/>
+                            </Route>
+                            <Route path="ReservationRoom" element={<ReservationRoom/>}>
+                                <Route path=':id' element={<ReservationRoomContent/>}/>
+                            </Route>
+                            <Route path="ItRoom" element={<ItRoom/>}>
+                                <Route path=':id' element={<ItRoomContent/>}/>
+                            </Route>
+                            <Route path="Corridors" element={<Corridors/>}>
+                                <Route path=':id' element={<CorridorsContent/>}/>
+                            </Route>
                         </Route>
-                        <Route path="PracticeRooms" element={<PracticeRooms/>}>
-                            <Route path=':id' element={<PracticeRoomsContent/>} />
-                        </Route>
-                        <Route path="LabRooms" element={<LabRooms/>}>
-                            <Route path=':id' element={<LabRoomsContent/>} />
-                        </Route>
-                        <Route path="Administration" element={<Administration/>}>
-                            <Route path=':id' element={<AdministrationContent/>} />
-                        </Route>
-                        <Route path="ReservationRoom" element={<ReservationRoom/>}>
-                            <Route path=':id' element={<ReservationRoomContent/>} />
-                        </Route>
-                        <Route path="ItRoom" element={<ItRoom/>}>
-                            <Route path=':id' element={<ItRoomContent/>} />
-                        </Route>
-                        <Route path="Corridors" element={<Corridors/>}>
-                            <Route path=':id' element={<CorridorsContent/>} />
-                        </Route>
+                        <Route path="maintenance" element={<MaintenanceGeneralManager/>}/>
+                        <Route path="myaccount" element={<MyAccountGeneralAdmin/>}/>
                     </Route>
-                    <Route path="maintenance" element={<MaintenanceGeneralManager/>}/>
-                    <Route path="myaccount" element={<MyAccountGeneralAdmin/>}/>
                 </Route>
                 <Route path="/AllocationManager" element={<ProfileGuard/>}>
-                    <Route path="" element={<DashboardGeneralManager/>}/>
-                    <Route path="equipment" element={<EquipmentsAllocationManager/>}/>
-                    <Route path="allocations" element={<AllocationsAllocationManager/>}/>
-                    <Route path="hpcschedule" element={<HPCScheduleAllocationManager/>}/>
-                    <Route path="users" element={<UsersAllocationManager/>}/>
-                    <Route path="myaccount" element={<MyAccountAllocationManager/>}/>
+                    <Route element={<RoleGuard expectedRole="ALLOCATIONMANAGER"/>}>
+                        <Route path="" element={<DashboardAllocationManager/>}/>
+                        <Route path="equipment" element={<EquipmentsAllocationManager/>}/>
+                        <Route path="allocations" element={<AllocationsAllocationManager/>}/>
+                        <Route path="hpcschedule" element={<HPCScheduleAllocationManager/>}/>
+                        <Route path="users" element={<UsersAllocationManager/>}/>
+                        <Route path="myaccount" element={<MyAccountAllocationManager/>}/>
+                    </Route>
                 </Route>
                 <Route path="/Student" element={<ProfileGuard/>}>
-                    <Route path="" element={<AllocationsStudent/>}/>
-                    <Route path="myaccount" element={<MyAccountStudent/>}/>
+                    <Route element={<RoleGuard expectedRole="STUDENT"/>}>
+                        <Route path="" element={<AllocationsStudent/>}/>
+                        <Route path="myaccount" element={<MyAccountStudent/>}/>
+                    </Route>
                 </Route>
                 <Route path="/Researcher" element={<ProfileGuard/>}>
-                    <Route path="" element={<AllocationsResearcher/>}/>
-                    <Route path="hpcschedule" element={<HPCScheduleResearcher/>}/>
-                    <Route path="myaccount" element={<MyAccountResearcher/>}/>
+                    <Route element={<RoleGuard expectedRole="RESEARCHER"/>}>
+                        <Route path="" element={<AllocationsResearcher/>}/>
+                        <Route path="hpcschedule" element={<HPCScheduleResearcher/>}/>
+                        <Route path="myaccount" element={<MyAccountResearcher/>}/>
+                    </Route>
                 </Route>
                 {/*<Route path="/try" element={<Try/>}/>*/}
             </Routes>
@@ -171,4 +232,4 @@ const App = () => {
     );
 };
 
-createRoot(document.getElementById('app')).render(<App />);
+createRoot(document.getElementById('app')).render(<App/>);

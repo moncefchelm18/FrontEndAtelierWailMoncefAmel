@@ -5,9 +5,10 @@ import {useCookies} from "react-cookie";
 const HPCAllocationForm = (props) => {
     const [locations, setLocations] = useState([]);
     const [references, setReferences] = useState([]);
-        const [usedReferences, setUsedReferences] = useState([]);
+    const [usedReferences, setUsedReferences] = useState([]);
     const [selectedReference, setSelectedReference] = useState("");
     const [selectedStartDate, setSelectedStartDate] = useState("");
+    const [message, setMessage] = useState(null)
     const [cookies] = useCookies(["token"]);
 
 
@@ -75,16 +76,19 @@ const HPCAllocationForm = (props) => {
             .then((response) => {
                 // Handle the response
                 console.log("Allocation successful");
+                setMessage(<p style={{color: 'green'}}>Allocation successful!</p>)
             })
             .catch((error) => {
                 // Handle errors
                 console.error("Allocation error:", error);
+                setMessage(<p style={{color: 'red'}}>Allocation error</p>)
             });
     };
 
     return(
-        <div className="add-form">
+        <div className="add-form" onClick={() => setMessage(null)}>
             <h2>New HPC allocation</h2>
+            {message && message}
             <form onSubmit={handleSubmit}>
                 <div className="add-form-input">
                     <label htmlFor="type">HPC</label>

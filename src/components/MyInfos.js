@@ -188,6 +188,7 @@ const MyInfos = (props) => {
                             <div className="form-container-form-infos-input">
                                 <label htmlFor="nationalId">National ID</label>
                                 <input
+                                    disabled={true}
                                     type="text"
                                     id="nationalId"
                                     value={nationalId}

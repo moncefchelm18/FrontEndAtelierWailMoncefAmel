@@ -128,6 +128,7 @@ const LocationsAdmin = () => {
                 })
                 .catch(error => {
                     console.log(error);
+                    setUpdateMessage(<p style={{ color: 'red', padding: '0px 20px' }}>Cannot update location</p>);
                 });
             setLoading(false)
             console.log(updatedLocation);

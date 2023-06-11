@@ -106,10 +106,11 @@ const DashboardAdmin = () => {
                     </div>
                 </div>
             </div>
-            <div className="dashboard-overall-container">
+            {/*<div className="dashboard-overall-container">
                 <h2>HPC usage</h2>
+                <LineChartHPC/>
             </div>
-
+            */}
         </>
     );
 }

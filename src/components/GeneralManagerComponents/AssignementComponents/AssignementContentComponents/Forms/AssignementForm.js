@@ -177,6 +177,10 @@ const AssignementForm = (props) => {
     ));
     const handleModelChange = (event) => {
         setSelectedModel(event.target.value);
+        setMessage(<p>Quantity : {filteredStockData.length}</p>)
+    };
+    const handleQuantityChange = (event) => {
+        setMessage(<p>Quantity : {filteredStockData.length}</p>)
     };
     useEffect(() => {
         if (selectedCategory && selectedEquipmentName && selectedBrand && selectedModel) {
@@ -219,7 +223,7 @@ const AssignementForm = (props) => {
     // console.log(filteredStockData);
 
     return (
-        <div className="add-form" onClick={() => setMessage(null)}>
+        <div className="add-form" /*onClick={() => setMessage(null)}*/>
             <h2>Assign new equipments</h2>
             {message && message}
             <form onSubmit={handleSubmit}>
@@ -263,6 +267,7 @@ const AssignementForm = (props) => {
                         className="add-form-input-select"
                         value={selectedModel}
                         onChange={handleModelChange}
+                        onFocus={handleQuantityChange}
                     >
                         <option value="" disabled hidden>
                             Select model of the equipment

@@ -19,7 +19,7 @@ const ManagersForm = (props) => {
     const handleFormSubmit = (event) => {
         event.preventDefault();
         formRef.current.scrollIntoView({ behavior: 'smooth' });
-        if (!password || !firstName || !lastName || !email || !phone || !nationalId || !address || !event.target.image.files[0]) {
+        if (!password || !firstName || !lastName || !email || !phone || !nationalId || !address /*|| !event.target.image.files[0]*/) {
             setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Please fill all the fields!</p>);
             return;
         }
@@ -28,9 +28,15 @@ const ManagersForm = (props) => {
             setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Phone number must start with '05', '06', or '07' and have 10 digits.</p>);
             return;
         }
-
+        if (password.length < 8){
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Password must have at least 8 digits</p>);
+        }
         if (!(nationalId.length === 18)){
             setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>National id must have 18 digits</p>);
+        }
+        if (!email.endsWith('@univ-constantine2.dz')) {
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Email must have the domain 'univ-constantine2.dz'.</p>);
+            return;
         }
         let url = "";
         if (selectedType === "General Manager") {
@@ -47,7 +53,9 @@ const ManagersForm = (props) => {
         data.append("phonenumber", phone);
         data.append("national_card_number", nationalId);
         data.append("address", address);
-        data.append("image", event.target.image.files[0] || null);
+        if (event.target.image.files[0]) {
+            data.append('image', event.target.image.files[0]);
+        }
         console.log(url);
         console.log(data);
 
@@ -59,7 +67,7 @@ const ManagersForm = (props) => {
         })
             .then(response => {
                 console.log(response);
-                if (response.status === 200) {
+                if (response.status === 201) {
                     setMessage(<p style={{color: 'green'}}>Manager added successfully!</p>)
                     console.log('Manager added successfully');
                 } else {

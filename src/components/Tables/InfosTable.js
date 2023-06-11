@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import "../CSS/equipmentTable.css";
 import {get} from "lodash";
+import {Link} from "react-router-dom";
 
 const InfosTable = (props) => {
     const [sortColumn, setSortColumn] = useState("");
@@ -96,6 +97,23 @@ const InfosTable = (props) => {
                                                     }}
                                                     alt="Equipment"
                                                 />
+                                            ) : title === "Qr code" ? (
+                                                // console.log(datas[props.columnMappings[title]])
+                                                <Link
+                                                    to={`http://172.20.10.4:8000${datas[props.columnMappings[title]]}`}
+                                                    target="_blank" rel="noopener noreferrer"
+                                                >
+                                                    <img
+                                                        width={40}
+                                                        height={40}
+                                                        src={`http://172.20.10.4:8000${datas[props.columnMappings[title]]}`}
+                                                        onError={(e) => {
+                                                            // Fall back to relative path if full URL fails to load
+                                                            e.target.src = datas[props.columnMappings[title]] || defaultImageSrc;
+                                                        }}
+                                                        alt="Equipment"
+                                                    />
+                                                </Link>
                                             ) : title === "Reserved" ? (
                                                 datas[props.columnMappings[title]] ? "YES" : "NO"
                                             ) : title === "Requested" ? (

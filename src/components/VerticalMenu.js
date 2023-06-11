@@ -6,6 +6,7 @@ import StudentVerticalMenu from "./verticalMenuUsers/StudentVerticalMenu";
 import ResearcherVerticalMenu from "./verticalMenuUsers/ResearcherVerticalMenu";
 import {Link, Navigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
+import Cookies from 'js-cookie';
 
 
 const VerticalMenu = (props) => {
@@ -13,11 +14,12 @@ const VerticalMenu = (props) => {
 
     const handleLogout = async () => {
         // Remove all cookies
-        const cookieNames = Object.keys(cookies);
+        Object.keys(Cookies.get()).forEach((cookieName) => {
+            Cookies.remove(cookieName);
+        });
+        removeCookies('role')
+        removeCookies('token')
 
-        for (let i = 0; i < cookieNames.length; i++) {
-            await removeCookies(cookieNames[i]);
-        }
     };
     return(
         <div className="menu-container">

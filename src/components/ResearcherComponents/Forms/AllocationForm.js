@@ -22,12 +22,12 @@ const AllocationForm = (props) => {
         };// Check if start date and finish date are valid
         const selectedStartDate = new Date(startDate);
         const selectedFinishDate = new Date(finishDate);
-        if (props.pendingAllocationLength >= 2  ) {
+        if (props.pendingAllocationLength >= 2 || props.activeAllocationLength >= 2) {
             setMessage(<p style={{ color: "red" }}>You have limitation of allocations</p>);
         }else if (!selectedStartDate || !selectedFinishDate || !purpose){
             setMessage(<p style={{ color: "red" }}>Please fill specified columns.</p>)
-        }else if (selectedStartDate > selectedFinishDate || selectedFinishDate - selectedStartDate > 31 * 24 * 60 * 60 * 1000) {
-            setMessage(<p style={{ color: "red" }}>Selected dates are invalid. Duration should not pass 31 days.</p>);
+        }else if (selectedStartDate > selectedFinishDate || selectedFinishDate - selectedStartDate > 7 * 24 * 60 * 60 * 1000) {
+            setMessage(<p style={{ color: "red" }}>Selected dates are invalid. Duration should not pass 7 days.</p>);
             return;
         }else {
             console.log(data)

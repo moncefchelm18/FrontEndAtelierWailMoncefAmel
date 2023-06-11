@@ -1,14 +1,14 @@
 const StockHistoriqueForm = (props) => {
     return(
         <>
-            <div className="add-form">
+            <div className="add-form" style={{whiteSpace: 'nowrap'}}>
                 <table>
                     <thead>
                     <tr>
                         {props.stockColumnTitles.map(title => (
-                            <th key={title}>{title}</th>
+                            <th key={title} style={{border: '2px solid black'}}>{title}</th>
                         ))}
-                        <th>
+                        <th style={{border: '2px solid black'}}>
                             Action
                         </th>
                     </tr>
@@ -17,9 +17,9 @@ const StockHistoriqueForm = (props) => {
                     {props.stockData.map((item, index) => (
                         <tr key={index}>
                             {Object.values(props.stockColumnMappings).map(key => (
-                                <td key={key}>{item[key]}</td>
+                                <td key={key} style={{border: '1px solid black'}}>{item[key]}</td>
                             ))}
-                            <td>{props.actionRender(item)}</td>
+                            <td style={{border: '1px solid black'}}>{props.actionRender(item)}</td>
                         </tr>
                     ))}
                     </tbody>

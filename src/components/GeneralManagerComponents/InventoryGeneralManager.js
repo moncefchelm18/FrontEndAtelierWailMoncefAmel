@@ -34,6 +34,7 @@ const InventoryGeneralManager = () => {
         "Brand": "brand",
         "Model": "model",
         "Condition": "condition",
+        "Qr code" : "qr_code",
         "Location": "Location",
         "Reserved" : "is_reserved",
         "Serial N*": "num_serie",

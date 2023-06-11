@@ -19,12 +19,29 @@ const AuthentificationForm = (props) => {
     const handleFormSubmit = (event) => {
         event.preventDefault();
         formRef.current.scrollIntoView({ behavior: 'smooth' });
-
+        if (!password || !firstName || !lastName || !email || !phone || !nationalId || !address /*|| !event.target.image.files[0]*/) {
+            setMessage(<p style={{color: 'red', padding:'10px 0px'}}>Please fill all the fields!</p>)
+            return;
+        }
+        const phoneRegex = /^(05|06|07)\d{8}$/;
+        if (!phoneRegex.test(phone)) {
+            setMessage(<p style={{color: 'red', padding:'10px 0px'}}>Phone number must start with '05', '06', or '07' and have 10 digits.</p>)
+            return;
+        }
+        if (password.length < 8){
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Password must have at least 8 digits</p>);
+        }
+        if (!(nationalId.length === 18)){
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>National id must have 18 digits</p>);
+        }
         if (password !== confirmPassword) {
             setMessage(<p style={{ color: 'red' }}>Make sure password match!</p>)
             return;
         }
-
+        if (!email.endsWith('@univ-constantine2.dz')) {
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Email must have the domain 'univ-constantine2.dz'.</p>);
+            return;
+        }
         let url = "";
         if (selectedType === "Student") {
             url = "http://172.20.10.4:8000/profiles/Student/";
@@ -40,7 +57,9 @@ const AuthentificationForm = (props) => {
         data.append("phonenumber", phone);
         data.append("national_card_number", nationalId);
         data.append("address", address);
-        data.append("image", event.target.image.files[0]);
+        if (event.target.image.files[0]) {
+            data.append('image', event.target.image.files[0]);
+        }
 
         fetch(url, {
             method: "POST",

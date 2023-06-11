@@ -123,7 +123,7 @@ const LocationsForm = (props) => {
                             </div>
                             <div className="add-form-input">
                                 <label htmlFor="description">Description</label>
-                                <input
+                                <textarea
                                     type="text"
                                     id="description"
                                     className="add-form-input-input"

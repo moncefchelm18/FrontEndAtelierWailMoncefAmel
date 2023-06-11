@@ -1,6 +1,7 @@
 import {useRef, useState} from "react";
 import '../../AdminComponents/CSS/myAccount.css';
 import {useCookies} from "react-cookie";
+import axios from "axios";
 
 const ManagersForm = (props) => {
     const [firstName, setFirstName] = useState('');
@@ -11,21 +12,30 @@ const ManagersForm = (props) => {
     const [nationalId, setNationalId] = useState('');
     const [address, setAddress] = useState('');
     const [previewImage, setPreviewImage] = useState(null);
-    const [selectedType, setSelectedType] = useState('General Manager');
+    const [selectedType, setSelectedType] = useState('Student');
     const [message, setMessage] = useState(null)
     const [cookies] = useCookies(['token']);
     const formRef = useRef(null);
     const handleFormSubmit = (event) => {
         event.preventDefault();
-
         formRef.current.scrollIntoView({ behavior: 'smooth' });
-        if (!password || !firstName || !lastName || !email || !phone || !nationalId || !address) {
+        if (!password || !firstName || !lastName || !email || !phone || !nationalId || !address /*|| !event.target.image.files[0]*/) {
             setMessage(<p style={{color: 'red', padding:'10px 0px'}}>Please fill all the fields!</p>)
             return;
         }
         const phoneRegex = /^(05|06|07)\d{8}$/;
         if (!phoneRegex.test(phone)) {
             setMessage(<p style={{color: 'red', padding:'10px 0px'}}>Phone number must start with '05', '06', or '07' and have 10 digits.</p>)
+            return;
+        }
+        if (password.length < 8){
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Password must have at least 8 digits</p>);
+        }
+        if (!(nationalId.length === 18)){
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>National id must have 18 digits</p>);
+        }
+        if (!email.endsWith('@univ-constantine2.dz')) {
+            setMessage(<p style={{ color: 'red', padding: '10px 0px' }}>Email must have the domain 'univ-constantine2.dz'.</p>);
             return;
         }
 
@@ -37,35 +47,35 @@ const ManagersForm = (props) => {
             url = "http://172.20.10.4:8000/profiles/Researcher/";
         }
 
-        const data = {
-            password: password,
-            name: firstName,
-            lastname: lastName,
-            email: email,
-            phonenumber: phone,
-            national_card_number: nationalId,
-            address: address
-        };
+        const formData = new FormData();
+        formData.append('password', password);
+        formData.append('name', firstName);
+        formData.append('lastname', lastName);
+        formData.append('email', email);
+        formData.append('phonenumber', phone);
+        formData.append('national_card_number', nationalId);
+        formData.append('address', address);
+
+        if (event.target.image.files[0]) {
+            formData.append('image', event.target.image.files[0]);
+        }
         console.log(url);
-        console.log(data)
-        fetch(url, {
-            method: 'POST',
+        console.log(formData)
+        axios.post(url, formData, {
             headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
+                "Content-Type": "multipart/form-data",
+                Authorization: `Token ${cookies.token}`,
             },
-            body: JSON.stringify(data),
         })
             .then(response => {
-                console.log(response)
-                if (response.ok) {
-                    // Manager added successfully
-                    // Perform any additional actions or update state as needed
+                console.log(response);
+                if (response.status === 201) {
+                    setMessage(<p style={{color: 'green'}}>{selectedType.toLowerCase()} added successfully!</p>)
                     console.log('User added successfully');
-                }
-                else {
+                } else {
                     // Error occurred during manager addition
-                    console.error('Error adding manager:', response.statusText);
+                    console.error('Error adding user:', response.statusText);
+                    setMessage(<p style={{color: 'red'}}>'Error adding manager: {response.statusText}</p>)
                 }
             })
             .catch(error => {

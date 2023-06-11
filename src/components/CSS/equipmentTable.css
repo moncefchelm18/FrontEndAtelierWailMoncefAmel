@@ -110,7 +110,7 @@
     border-collapse: collapse;
     /*box-shadow: 0 5px 10px grey;*/
     text-align: left;
-    /*overflow: hidden;*/
+    overflow: hidden;
     -webkit-overflow-scrolling: touch;
 
 }

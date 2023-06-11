@@ -32,7 +32,7 @@ const InventoryTotalOverview = ({equipmentData}) => {
                     </div>
                     <div className="overview-item">
                         <img src="/playground_assets/icons/stolen-condition.png" style={{width:"30px", height: "30px"}}/>
-                        <p>{equipmentData.filter(e => e.condition === "reserve").length}</p>
+                        <p>{equipmentData.filter(e => e.condition === "stolen").length}</p>
                         <p>Equipments Stolen!</p>
                     </div>
                     <div className="overview-item">

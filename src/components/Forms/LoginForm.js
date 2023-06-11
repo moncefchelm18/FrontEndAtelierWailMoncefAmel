@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Navigate} from 'react-router-dom';
 import {useCookies} from "react-cookie";
 // import jwt_decode from 'jsonwebtoken';
@@ -8,6 +8,8 @@ const LoginForm = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState(null);
+    const [isValid, setIsValid] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
@@ -31,30 +33,62 @@ const LoginForm = (props) => {
             });
 
             if (response.ok) {
+                setCookie('role', '', { path: '/', maxAge: -1 });
+                setCookie('token', '', { path: '/', maxAge: -1 });
                 const responseData = await response.json();
-                // store the token and role in cookies
-                setCookie('token', responseData.token);
-                setCookie('role', responseData.role, { path: '/' }); // Set cookie with path '/'
+                const expirationDate = new Date();
+                expirationDate.setTime(expirationDate.getTime() + 24 * 60 * 60 * 1000);
+                setCookie('token', responseData.token, { expires: expirationDate }/*, ''*/);
+                setCookie('role', responseData.role, { expires: expirationDate }/*, { path: '/' }*/); // Set cookie with path '/'
             } else {
                 const responseData = await response.json();
                 setErrorMessage(<p style={{ color: 'red' }}>{responseData.non_field_errors[0]}</p>);
             }
+
         } catch (error) {
             console.log(error);
             setErrorMessage(<p style={{ color: 'red' }}>{error.toString()}</p>);
         }
     };
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            try {
+                const response = await fetch("http://172.20.10.4:8000/connecteduser/", {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${cookies.token}` // Assuming you have access to cookies containing the token
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    console.log(userData);
+                    setIsValid(userData.is_active === true); // Update the isValid state based on userData.is_active value
+                } else {
+                    console.error("Failed to fetch user info:", response.statusText);
+                }
+            } catch (error) {
+                console.error("Error occurred while fetching user info:", error);
+            }
+        };
+        fetchUserInfo();
+        setIsLoading(false);
+    }, [cookies.token]);
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     // If the user is already logged in, redirect to the Admin page
-    if (cookies.token && cookies.role === 'ADMIN') {
+    if (isValid && cookies.token && cookies.role === 'ADMIN') {
         return <Navigate to="/Admin" />;
-    }else if(cookies.token && cookies.role === 'PRINCIPALMANAGER'){
+    }else if(isValid && cookies.token && cookies.role === 'PRINCIPALMANAGER'){
         return <Navigate to="/GeneralManager" />;
-    }else if(cookies.token && cookies.role === 'ALLOCATIONMANAGER'){
+    }else if(isValid && cookies.token && cookies.role === 'ALLOCATIONMANAGER'){
         return <Navigate to="/AllocationManager" />;
-    } else if(cookies.token && cookies.role === 'STUDENT'){
+    } else if(isValid && cookies.token && cookies.role === 'STUDENT'){
         return <Navigate to="/Student" />;
-    }else if(cookies.token && cookies.role === 'RESEARCHER'){
+    }else if(isValid && cookies.token && cookies.role === 'RESEARCHER'){
         return <Navigate to="/Researcher" />;
     }
 

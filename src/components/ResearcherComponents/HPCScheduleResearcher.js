@@ -51,6 +51,7 @@ const HPCScheduleResearcher = (props) => {
 
         fetchUserInfo();
     }, [cookies.token]);
+
     useEffect(() => {
         if (connectedUserId) {
             fetch('http://172.20.10.4:8000/allocatehpc/', {
@@ -157,10 +158,6 @@ const HPCScheduleResearcher = (props) => {
             <div className="inventory-table">
                 <EquipmentTableHeader
                     title={'My HPC allocation'}
-                    // buttonName={'filter'}
-                    // isFilterButton={true}
-                    // className={'filter_button'}
-                    // onClick={handleAddClick}
                 />
                 <InfosTable
                     columnTitles={columnTitles}
@@ -201,8 +198,12 @@ const HPCScheduleResearcher = (props) => {
                         <div className="add-form ">
                             <h2>Event Details</h2>
                             <p>{selectedEvent.title}</p>
-                            <p>Start Date: {selectedEvent.start.toString()}</p>
-                            <p>End Date: {selectedEvent.end.toString()}</p>
+                            <p>
+                                <strong>Start Date:</strong> {selectedEvent.start.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
+                            </p>
+                            <p>
+                                <strong>End Date:</strong> {selectedEvent.end.toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })}
+                            </p>
                         </div>
                     </>
                 )}

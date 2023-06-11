@@ -31,7 +31,7 @@ const CategoriesForm = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (!name) {
+        if (!name || !description) {
             event.preventDefault();
             setError(<ErrorMessage/>)
             return;

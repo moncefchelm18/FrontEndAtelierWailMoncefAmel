@@ -18,9 +18,9 @@ const OverviewItem = (props) => {
 const DashboardGeneralManager = () => {
 
     const [totalEquipments, setTotalEquipments] = useState(null);
-    const [totalCategories, setTotalCategories] = useState(null);
+    const [totalStockEquipments, setTotalStockEquipments] = useState(null);
     const [totalLocations, setTotalLocations] = useState(null);
-    const [totalGenerealManagers, setTotalGenerealManagers] = useState(null);
+    const [totalStock, setTotalStock] = useState(null);
     const [totalAllocationManagers, setTotalAllocationManagers] = useState(null);
     // const [equipmentData, setEquipmentData] = useState(null);
     // totalEquipment
@@ -30,9 +30,9 @@ const DashboardGeneralManager = () => {
         })
 
     // total-categories
-    axios.get('http://172.20.10.4:8000/categories/')
+    axios.get('http://172.20.10.4:8000/equipement/')
         .then(response => {
-            setTotalCategories(response.data.length);
+            setTotalStockEquipments(response.data.length);
         })
     // total-locations
     axios.get('http://172.20.10.4:8000/location/')
@@ -40,9 +40,9 @@ const DashboardGeneralManager = () => {
             setTotalLocations(response.data.length);
         })
     // total-genereal-managers
-    axios.get('http://172.20.10.4:8000/profiles/principalmanagers/')
+    axios.get('http://172.20.10.4:8000/stock/')
         .then(response => {
-            setTotalGenerealManagers(response.data.length);
+            setTotalStock(response.data.length);
         })
     // total-allocation-managers
     axios.get('http://172.20.10.4:8000/profiles/Allocationmanager/')
@@ -51,32 +51,22 @@ const DashboardGeneralManager = () => {
         })
 
 
-    const equipmentData = {
-        labels: ['Good', 'Medium', 'Poor', 'Reserved', 'Stolen'],
-        datasets: [
-            {
-                data: [20, 10, 5, 8, 2], // Sample data for each condition type
-                backgroundColor: ['#4CAF50', '#FFC107', '#F44336', '#9E9E9E', '#607D8B'],
-            },
-        ],
-    };
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        legend: {
-            position: 'right',
-            align: 'start',
-        },
-    };
-
-
     return (
         <>
             <Path pathName={'Dashboard'}/>
             <div className="dashboard-overall-container">
                 <h2>Total Overview</h2>
                 <div className="overview-grid">
+                    <OverviewItem
+                        icon={<img width={30} height={30} src="https://cdn-icons-png.flaticon.com/512/4222/4222002.png"/>}
+                        totalNumber={totalStock}
+                        totalTitle={'Total enteries stock'}
+                    />
+                    <OverviewItem
+                        icon={<img width={30} height={30} src="https://cdn-icons-png.flaticon.com/512/4947/4947506.png"/>}
+                        totalNumber={totalStockEquipments}
+                        totalTitle={'Total stock eq'}
+                    />
                     <OverviewItem
                         icon={<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="0.5" width="30" height="30" rx="4" fill="#FFEEDB"/>
@@ -109,6 +99,7 @@ const DashboardGeneralManager = () => {
             </div>
             <div className="dashboard-overall-container">
                 <div className="dashboard-equipment-charts">
+                    <h2>Equipments affectation</h2>
                     <BarEquipmentsAffectation/>
                 </div>
             </div>

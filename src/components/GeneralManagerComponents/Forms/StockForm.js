@@ -26,7 +26,7 @@ const StockForm = (props) => {
             formRef.current.scrollIntoView({ behavior: 'smooth' });
         }else{
             const formData = new FormData();
-            formData.append('created_by', 2);
+            // formData.append('created_by', 2);
             formData.append('name', name);
             formData.append('brand', brand);
             formData.append('model', model);
@@ -181,6 +181,7 @@ const StockForm = (props) => {
                         type="number"
                         id="quantity"
                         min="1"
+                        max="50"
                         className="add-form-input-input"
                         placeholder="Enter quantity"
                         value={quantite}

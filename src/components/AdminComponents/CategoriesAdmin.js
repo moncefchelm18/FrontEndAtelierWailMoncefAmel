@@ -138,7 +138,7 @@ const CategoriesAdmin = () => {
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-                    setUpdateMessage(<p style={{ color: 'red', padding: '0px 20px' }}>Cannot update category</p>);
+                    setUpdateMessage(<p style={{ color: 'red', padding: '0px 20px' }}>Cannot update category it might be in use</p>);
                 })
                 .finally(() => {
                     setLoading(false);

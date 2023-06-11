@@ -21,6 +21,8 @@ const Header = (props) => {
     const [notificationCount, setNotificationCount] = useState(notificationMessages.length);
     const [userImage, setUserImage] = useState(null);
     const [menuAppear, setMenuAppear] = useState(false);
+    const [userDatas, setUserDatas] = useState(false);
+
 
 
     const columnMappings = {
@@ -60,7 +62,7 @@ const Header = (props) => {
         };
 
         fetchUserInfo();
-    }, [cookies.token]);
+    }, [cookies.token, ]);
 
     const handleAction = (notification) => {
         return(
